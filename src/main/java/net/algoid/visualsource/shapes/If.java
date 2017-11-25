@@ -10,13 +10,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 
@@ -37,6 +36,9 @@ public class If extends Pane {
     private double currentDeltaX = 0;
     private double currentDeltaY = 0;
 
+    private final SnapPane args;
+    private final SnapPane block;
+
     public If(VisualSourcePlaceHolder placeHolder, double x, double y) {
         this.placeHolder = placeHolder;
         setId("if" + new Random().nextInt(Integer.MAX_VALUE));
@@ -47,12 +49,12 @@ public class If extends Pane {
         canvas = new Canvas(100, 100);
         getChildren().add(canvas);
 
-        HBox args = new HBox();
+        args = new SnapPane();
         getChildren().add(args);
         args.setLayoutX(100);
         args.setLayoutY(0);
 
-        VBox block = new VBox();
+        block = new SnapPane();
         getChildren().add(block);
         block.setLayoutX(0);
         block.setLayoutY(100);
@@ -104,6 +106,7 @@ public class If extends Pane {
             currentDeltaY = event.getSceneY() - getLayoutY();
         }
 
+        this.toFront();
         this.setEffect(moveShadow);
         event.consume();
 
@@ -141,6 +144,14 @@ public class If extends Pane {
         // snap
         if (pane != null && getParent() instanceof Pane) {
             ((Pane) getParent()).getChildren().remove(this);
+            setLayoutX(0);
+            setLayoutY(0);
+            if (!pane.getChildren().isEmpty()) {
+                Node existingChild = pane.getChildren().get(0);
+                pane.getChildren().remove(existingChild);
+                // TODO JIRA #1
+                this.args.getChildren().add(existingChild);
+            }
             pane.getChildren().add(this);
         }
     }
@@ -149,12 +160,14 @@ public class If extends Pane {
         // TODO Check here collisions
     }
 
+    private Color color = Color.color(Math.random(), Math.random(), Math.random());
+
     @Override
     protected void layoutChildren() {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.clearRect(0, 0, 100, 100);
-        gc.setFill(Color.DARKGOLDENROD);
+        gc.setFill(color);
         gc.fillRect(0, 0, 100, 100);
     }
 }

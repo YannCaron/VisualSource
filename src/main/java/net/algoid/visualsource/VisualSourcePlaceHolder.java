@@ -5,11 +5,11 @@
  */
 package net.algoid.visualsource;
 
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import net.algoid.visualsource.shapes.SnapPane;
 
 /**
  *
@@ -34,12 +34,17 @@ public class VisualSourcePlaceHolder extends Pane {
             Pane pane = (Pane) node;
             for (Node child : pane.getChildren()) {
                 if (child != query) {
-                    if (child instanceof VBox || child instanceof HBox) {
+                    if (child instanceof SnapPane) {
                         Bounds queryInScene = query.localToScene(query.getBoundsInLocal());
-                        Bounds childInScene = child.localToScene(child.getBoundsInLocal());
+                        Bounds childInScene = child.localToScene(new BoundingBox(child.getBoundsInLocal().getMinX(), child.getBoundsInLocal().getMinY(), 10, 10));
 
                         if (queryInScene.intersects(childInScene)) {
                             return (Pane) child;
+                        } else {
+                            Pane found = queryRegionIntersecton(query, child);
+                            if (found != null) {
+                                return found;
+                            }
                         }
 
                     } else {
