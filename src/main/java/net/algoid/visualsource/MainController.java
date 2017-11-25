@@ -26,8 +26,9 @@ public class MainController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        If ifShape = new If();
-        visualSourcePlaceHolder.getChildren().add(ifShape);
+        If shape1 = new If(visualSourcePlaceHolder, 10, 10);
+        If shape2 = new If(visualSourcePlaceHolder, 200, 10);
+        visualSourcePlaceHolder.getChildren().addAll(shape1, shape2);
     }
 
     public void setData() {
