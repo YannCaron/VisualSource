@@ -27,7 +27,7 @@ import net.algoid.visualsource.shapes.SnapPane.Type;
  */
 public class If extends InstructionPane {
 
-    private static final double MOVE_EFFECT_DISPLACE = 2.0;
+    private static final double MOVE_EFFECT_DISPLACE = 4.0;
     private static final double MOVE_EFFECT_BLUR = 5.0;
 
     private final VisualSourcePlaceHolder placeHolder;
@@ -53,7 +53,7 @@ public class If extends InstructionPane {
         createSnap(Type.EXPRESSION, 100, 0);
         createSnap(Type.INSTRUCTION, 0, 100);
 
-        moveShadow = new DropShadow(MOVE_EFFECT_BLUR, MOVE_EFFECT_DISPLACE * 2, MOVE_EFFECT_DISPLACE * 2, Color.GRAY);
+        moveShadow = new DropShadow(MOVE_EFFECT_BLUR, MOVE_EFFECT_DISPLACE, MOVE_EFFECT_DISPLACE, Color.GRAY);
 
         // event management
         setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -86,9 +86,6 @@ public class If extends InstructionPane {
     }
 
     protected void this_onMousePresser(MouseEvent event) {
-        setLayoutX(getLayoutX() - MOVE_EFFECT_DISPLACE);
-        setLayoutY(getLayoutY() - MOVE_EFFECT_DISPLACE);
-
         currentDeltaX = event.getX();
         currentDeltaY = event.getY();
 
@@ -97,6 +94,9 @@ public class If extends InstructionPane {
             placeHolder.getChildren().add(this);
             this_onMouseDragged(event);
         }
+
+        setLayoutX(getLayoutX() - MOVE_EFFECT_DISPLACE);
+        setLayoutY(getLayoutY() - MOVE_EFFECT_DISPLACE);
 
         this.toFront();
         this.setEffect(moveShadow);
