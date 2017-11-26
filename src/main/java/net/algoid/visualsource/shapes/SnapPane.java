@@ -5,12 +5,9 @@
  */
 package net.algoid.visualsource.shapes;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.transform.Transform;
 
 /**
  *
@@ -18,21 +15,31 @@ import javafx.scene.transform.Transform;
  */
 public class SnapPane extends AnchorPane {
 
-    public static final double SNAP_AREA_SIZE = 10;
-    private final Bounds snapBoundsInLocal;
-    
-    // TODO JIRA #1
-    
-    public SnapPane() {
-        snapBoundsInLocal = new BoundingBox(getBoundsInLocal().getMinX(), getBoundsInLocal().getMinY(), SNAP_AREA_SIZE, SNAP_AREA_SIZE);
-        
-        localToSceneTransformProperty().addListener(new ChangeListener<Transform>() {
-            @Override
-            public void changed(ObservableValue<? extends Transform> observable, Transform oldValue, Transform newValue) {
-                //snapBoundsInLocal.
-            }
-        });
+    public enum Type {
+        EXPRESSION, INSTRUCTION
+    }
 
+    public static final double SNAP_AREA_SIZE = 10;
+    private final Type type;
+
+    public SnapPane(Type type) {
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Bounds getSnapBoundsInLocal() {
+        Bounds local = getBoundsInLocal();
+        return new BoundingBox(local.getMinX(), local.getMinY(), SNAP_AREA_SIZE, SNAP_AREA_SIZE);
+    }
+
+    public boolean intersectsInstruction(InstructionPane instruction) {
+        Bounds instructionInScene = instruction.localToScene(instruction.getAnchorBoundsInLocal());
+        Bounds inScene = localToScene(getSnapBoundsInLocal());
+
+        return inScene.intersects(instructionInScene);
     }
 
 }

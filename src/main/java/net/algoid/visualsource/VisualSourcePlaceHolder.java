@@ -5,10 +5,10 @@
  */
 package net.algoid.visualsource;
 
-import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import net.algoid.visualsource.shapes.InstructionPane;
 import net.algoid.visualsource.shapes.SnapPane;
 
 /**
@@ -25,30 +25,19 @@ public class VisualSourcePlaceHolder extends Pane {
         super(children);
     }
 
-    public Pane queryRegionIntersecton(Node except) {
-        return queryRegionIntersecton(except, this);
+    public SnapPane queryRegionIntersecton(InstructionPane query) {
+        return queryRegionIntersecton(query, this);
     }
 
-    public Pane queryRegionIntersecton(Node query, Node node) {
+    public SnapPane queryRegionIntersecton(InstructionPane query, Node node) {
         if (node instanceof Pane) {
             Pane pane = (Pane) node;
             for (Node child : pane.getChildren()) {
                 if (child != query) {
-                    if (child instanceof SnapPane) {
-                        Bounds queryInScene = query.localToScene(query.getBoundsInLocal());
-                        Bounds childInScene = child.localToScene(new BoundingBox(child.getBoundsInLocal().getMinX(), child.getBoundsInLocal().getMinY(), 10, 10));
-
-                        if (queryInScene.intersects(childInScene)) {
-                            return (Pane) child;
-                        } else {
-                            Pane found = queryRegionIntersecton(query, child);
-                            if (found != null) {
-                                return found;
-                            }
-                        }
-
+                    if (child instanceof SnapPane && ((SnapPane) child).intersectsInstruction(query)) {
+                        return (SnapPane) child;
                     } else {
-                        Pane found = queryRegionIntersecton(query, child);
+                        SnapPane found = queryRegionIntersecton(query, child);
                         if (found != null) {
                             return found;
                         }

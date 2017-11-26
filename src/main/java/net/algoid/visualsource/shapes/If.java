@@ -10,6 +10,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,12 +19,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
+import net.algoid.visualsource.shapes.SnapPane.Type;
 
 /**
  *
  * @author cyann
  */
-public class If extends Pane {
+public class If extends InstructionPane {
 
     private static final double MOVE_EFFECT_DISPLACE = 2.0;
     private static final double MOVE_EFFECT_BLUR = 5.0;
@@ -36,28 +38,20 @@ public class If extends Pane {
     private double currentDeltaX = 0;
     private double currentDeltaY = 0;
 
-    private final SnapPane args;
-    private final SnapPane block;
-
     public If(VisualSourcePlaceHolder placeHolder, double x, double y) {
-        this.placeHolder = placeHolder;
-        setId("if" + new Random().nextInt(Integer.MAX_VALUE));
+        super(100, 100);
 
+        this.placeHolder = placeHolder;
+
+        setId("if" + new Random().nextInt(Integer.MAX_VALUE));
         setLayoutX(x);
         setLayoutY(y);
 
         canvas = new Canvas(100, 100);
         getChildren().add(canvas);
 
-        args = new SnapPane();
-        getChildren().add(args);
-        args.setLayoutX(100);
-        args.setLayoutY(0);
-
-        block = new SnapPane();
-        getChildren().add(block);
-        block.setLayoutX(0);
-        block.setLayoutY(100);
+        createSnap(Type.EXPRESSION, 100, 0);
+        createSnap(Type.INSTRUCTION, 0, 100);
 
         moveShadow = new DropShadow(MOVE_EFFECT_BLUR, MOVE_EFFECT_DISPLACE * 2, MOVE_EFFECT_DISPLACE * 2, Color.GRAY);
 
@@ -95,15 +89,13 @@ public class If extends Pane {
         setLayoutX(getLayoutX() - MOVE_EFFECT_DISPLACE);
         setLayoutY(getLayoutY() - MOVE_EFFECT_DISPLACE);
 
+        currentDeltaX = event.getX();
+        currentDeltaY = event.getY();
+
         if (getParent() instanceof Pane && getParent() != placeHolder) {
             ((Pane) getParent()).getChildren().remove(this);
-
             placeHolder.getChildren().add(this);
-
             this_onMouseDragged(event);
-        } else {
-            currentDeltaX = event.getSceneX() - getLayoutX();
-            currentDeltaY = event.getSceneY() - getLayoutY();
         }
 
         this.toFront();
@@ -124,8 +116,9 @@ public class If extends Pane {
     }
 
     protected void this_onMouseDragged(MouseEvent event) {
-        double x = event.getSceneX() - currentDeltaX;
-        double y = event.getSceneY() - currentDeltaY;
+        Point2D pt = placeHolder.sceneToLocal(event.getSceneX(), event.getSceneY());
+        double x = pt.getX() - currentDeltaX;
+        double y = pt.getY() - currentDeltaY;
 
         x = bound(x, getBoundsInLocal().getWidth(), getParent().getBoundsInLocal().getWidth());
         y = bound(y, getBoundsInLocal().getHeight(), getParent().getBoundsInLocal().getHeight());
@@ -139,20 +132,28 @@ public class If extends Pane {
         setLayoutX(getLayoutX() + MOVE_EFFECT_DISPLACE);
         setLayoutY(getLayoutY() + MOVE_EFFECT_DISPLACE);
 
-        Pane pane = placeHolder.queryRegionIntersecton(this);
+        SnapPane snap = placeHolder.queryRegionIntersecton(this);
 
         // snap
-        if (pane != null && getParent() instanceof Pane) {
-            ((Pane) getParent()).getChildren().remove(this);
+        if (snap != null) {
+            snap.getChildren().remove(this);
             setLayoutX(0);
             setLayoutY(0);
-            if (!pane.getChildren().isEmpty()) {
-                Node existingChild = pane.getChildren().get(0);
-                pane.getChildren().remove(existingChild);
-                // TODO JIRA #1
-                this.args.getChildren().add(existingChild);
+            if (!snap.getChildren().isEmpty()) {
+                Node existingChild = snap.getChildren().get(0);
+                Bounds childBounds = snap.getParent().localToParent(existingChild.getBoundsInLocal());
+                snap.getChildren().remove(existingChild);
+
+                SnapPane localSnap = findSnapOfType(snap.getType());
+                if (localSnap != null) {
+                    localSnap.getChildren().add(existingChild);
+                } else {
+                    placeHolder.getChildren().add(existingChild);
+                    existingChild.setLayoutX(childBounds.getMinX() + childBounds.getWidth() / 2);
+                    existingChild.setLayoutY(childBounds.getMinY() + childBounds.getHeight() / 2);
+                }
             }
-            pane.getChildren().add(this);
+            snap.getChildren().add(this);
         }
     }
 
