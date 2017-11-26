@@ -18,24 +18,27 @@ import javafx.scene.layout.Pane;
 public class InstructionPane extends Pane {
 
     private final Bounds anchorBounds;
-    private final List<SnapPane> snaps;
+    private final List<SnapPane> chainableSnap;
 
     public InstructionPane(double width, double height) {
         Bounds local = getBoundsInLocal();
         anchorBounds = new BoundingBox(local.getMinX(), local.getMinY(), width, height);
-        snaps = new ArrayList<>();
+        chainableSnap = new ArrayList<>();
     }
 
-    public final void createSnap(SnapPane.Type type, double x, double y) {
+    public final void createSnap(SnapPane.Type type, double x, double y, boolean chainable) {
         SnapPane args = new SnapPane(type);
         getChildren().add(args);
         args.setLayoutX(x);
         args.setLayoutY(y);
-        snaps.add(args);
+
+        if (chainable) {
+            chainableSnap.add(args);
+        }
     }
 
     public SnapPane findSnapOfType(SnapPane.Type type) {
-        for (SnapPane snap : snaps) {
+        for (SnapPane snap : chainableSnap) {
             if (type == snap.getType()) {
                 return snap;
             }

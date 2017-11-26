@@ -50,8 +50,8 @@ public class If extends InstructionPane {
         canvas = new Canvas(100, 100);
         getChildren().add(canvas);
 
-        createSnap(Type.EXPRESSION, 100, 0);
-        createSnap(Type.INSTRUCTION, 0, 100);
+        createSnap(Type.EXPRESSION, 100, 0, true);
+        createSnap(Type.INSTRUCTION, 0, 100, true);
 
         moveShadow = new DropShadow(MOVE_EFFECT_BLUR, MOVE_EFFECT_DISPLACE, MOVE_EFFECT_DISPLACE, Color.GRAY);
 
