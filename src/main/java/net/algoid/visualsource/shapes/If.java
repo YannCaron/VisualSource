@@ -19,7 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
-import net.algoid.visualsource.shapes.SnapPane.Type;
+import net.algoid.visualsource.shapes.SnapRegion.Type;
 
 /**
  *
@@ -89,8 +89,8 @@ public class If extends InstructionPane {
         currentDeltaX = event.getX();
         currentDeltaY = event.getY();
 
-        if (getParent() instanceof Pane && getParent() != placeHolder) {
-            ((Pane) getParent()).getChildren().remove(this);
+        if (getParent() instanceof SnapRegion) {
+            ((SnapRegion) getParent()).removeInstruction();
             placeHolder.getChildren().add(this);
             this_onMouseDragged(event);
         }
@@ -132,28 +132,28 @@ public class If extends InstructionPane {
         setLayoutX(getLayoutX() + MOVE_EFFECT_DISPLACE);
         setLayoutY(getLayoutY() + MOVE_EFFECT_DISPLACE);
 
-        SnapPane snap = placeHolder.queryRegionIntersecton(this);
+        SnapRegion snap = placeHolder.queryRegionIntersecton(this);
 
         // snap
         if (snap != null) {
-            snap.getChildren().remove(this);
             setLayoutX(0);
             setLayoutY(0);
-            if (!snap.getChildren().isEmpty()) {
-                Node existingChild = snap.getChildren().get(0);
-                Bounds childBounds = snap.getParent().localToParent(existingChild.getBoundsInLocal());
-                snap.getChildren().remove(existingChild);
 
-                SnapPane localSnap = findSnapOfType(snap.getType());
+            if (snap.containsInstruction()) {
+                InstructionPane existingChild = snap.getInstruction();
+                Bounds childBounds = snap.getParent().localToParent(existingChild.getBoundsInLocal());
+                snap.removeInstruction();
+
+                SnapRegion localSnap = findSnapOfType(snap.getType());
                 if (localSnap != null) {
-                    localSnap.getChildren().add(existingChild);
+                    localSnap.setInstruction(existingChild);
                 } else {
                     placeHolder.getChildren().add(existingChild);
                     existingChild.setLayoutX(childBounds.getMinX() + childBounds.getWidth() / 2);
                     existingChild.setLayoutY(childBounds.getMinY() + childBounds.getHeight() / 2);
                 }
             }
-            snap.getChildren().add(this);
+            snap.setInstruction(this);
         }
     }
 
