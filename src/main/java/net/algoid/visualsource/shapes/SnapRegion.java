@@ -7,31 +7,50 @@ package net.algoid.visualsource.shapes;
 
 import javafx.geometry.Bounds;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 /**
  *
  * @author cyann
  */
-public class SnapRegion extends Region {
+public abstract class SnapRegion extends Region {
 
     public enum Type {
         EXPRESSION, INSTRUCTION
     }
 
-    public static final double SNAP_AREA_SIZE = 5;
+    public static final double SNAP_AREA_SIZE = 10;
     private final Type type;
     private final InstructionNode parentInstruction;
     private InstructionNode instruction;
+    
+    private Shape area;
 
     public SnapRegion(InstructionNode parent, Type type) {
         this.parentInstruction = parent;
         this.type = type;
+        
+        area = getAreaShape();
+        area.setVisible(false);
+        getChildren().add(area);
     }
+    
+    public abstract Shape getAreaShape();
 
     public InstructionNode getParentInstruction() {
         return parentInstruction;
     }
 
+    public void showArea() {
+        area.setVisible(true);
+    }
+    
+    public void hideArea() {
+        area.setVisible(false);
+    }
+    
     public Type getType() {
         return type;
     }
@@ -40,6 +59,7 @@ public class SnapRegion extends Region {
         getChildren().remove(this.instruction);
         this.instruction = instruction;
         getChildren().add(instruction);
+        area.toFront();
     }
 
     public InstructionNode getInstruction() {
@@ -74,8 +94,8 @@ public class SnapRegion extends Region {
     }
 
     public boolean intersectsInstruction(InstructionNode query) {
-        Bounds queryInScene = query.localToScene(query.getBoundsInLocal());
-        Bounds thisInScene = localToScene(getBoundsInLocal());
+        Bounds queryInScene = query.localToScene(query.getInitialBoundsInLocal());
+        Bounds thisInScene = localToScene(area.getBoundsInLocal());
 
         return thisInScene.intersects(queryInScene);
     }

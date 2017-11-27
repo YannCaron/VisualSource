@@ -7,21 +7,15 @@ package net.algoid.visualsource.shapes;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.BoxBlur;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 
 /**
@@ -39,11 +33,13 @@ public class InstructionNode extends Region {
     private double currentDeltaY = 0;
 
     private final List<SnapRegion> chainableSnap;
+    private final Bounds initialBoundsInLocal;
 
     // constructor
     public InstructionNode(VisualSourcePlaceHolder placeHolder, double width, double height) {
         this.placeHolder = placeHolder;
         chainableSnap = new ArrayList<>();
+        initialBoundsInLocal = new BoundingBox(0, 0, width, height);
 
         // create effects
         moveEffect = new GaussianBlur();
@@ -66,15 +62,43 @@ public class InstructionNode extends Region {
         return canvas;
     }
 
+    public Bounds getInitialBoundsInLocal() {
+        return initialBoundsInLocal;
+    }
+
+    // private
+    private void applyMoveEffect() {
+        setEffect(moveEffect);
+    }
+
+    private void removeMoveEffect() {
+        setEffect(null);
+        setOpacity(1);
+        if (currentRegion != null) {
+            currentRegion.hideArea();
+        }
+
+    }
+
+    private double limitValue(double v, double size, double max) {
+        if (v < 0) {
+            return 0;
+        }
+        if (v + size >= max) {
+            return max - size;
+        }
+
+        return v;
+    }
+
     // method
-    protected final void createSnap(SnapRegion.Type type, double x, double y, boolean chainable) {
-        SnapRegion args = new SnapRegion(this, type);
-        getChildren().add(args);
-        args.setLayoutX(x);
-        args.setLayoutY(y);
+    protected final void addSnap(SnapRegion snap, double x, double y, boolean chainable) {
+        getChildren().add(snap);
+        snap.setLayoutX(x);
+        snap.setLayoutY(y);
 
         if (chainable) {
-            chainableSnap.add(args);
+            chainableSnap.add(snap);
         }
     }
 
@@ -130,41 +154,35 @@ public class InstructionNode extends Region {
 
     }
 
-    private void applyMoveEffect() {
-        setEffect(moveEffect);
-    }
-
-    private void removeMoveEffect() {
-        setEffect(null);
-    }
-
-    private double bound(double v, double size, double max) {
-        if (v < 0) {
-            return 0;
-        }
-        if (v + size >= max) {
-            return max - size;
-        }
-
-        return v;
-    }
+    private SnapRegion currentRegion;
 
     protected void this_onMouseDragged(MouseEvent event) {
         Point2D pt = placeHolder.sceneToLocal(event.getSceneX(), event.getSceneY());
         double x = pt.getX() - currentDeltaX;
         double y = pt.getY() - currentDeltaY;
 
-        x = bound(x, getBoundsInLocal().getWidth(), getParent().getBoundsInLocal().getWidth());
-        y = bound(y, getBoundsInLocal().getHeight(), getParent().getBoundsInLocal().getHeight());
+        x = limitValue(x, getBoundsInLocal().getWidth(), getParent().getBoundsInLocal().getWidth());
+        y = limitValue(y, getBoundsInLocal().getHeight(), getParent().getBoundsInLocal().getHeight());
 
         setLayoutX(x);
         setLayoutY(y);
 
         SnapRegion snap = placeHolder.queryRegionIntersection(this);
-        if (snap != null) {
-            setOpacity(0.75);
-        } else {
-            setOpacity(1);
+        if (snap != currentRegion) {
+            if (currentRegion != null){
+                currentRegion.hideArea();
+            }
+            
+            if (snap != null) {
+                System.out.println("enter snap " + snap);
+                currentRegion = snap;
+                setOpacity(0.75);
+                currentRegion.showArea();
+            } else if (currentRegion != null) {
+                System.out.println("exit snap" + currentRegion);
+                currentRegion = null;
+                setOpacity(1);
+            }
         }
     }
 

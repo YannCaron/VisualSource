@@ -8,6 +8,8 @@ package net.algoid.visualsource.shapes;
 import java.util.Random;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 import net.algoid.visualsource.shapes.SnapRegion.Type;
 
@@ -24,8 +26,24 @@ public class SquareDummy extends InstructionNode {
         setLayoutX(x);
         setLayoutY(y);
 
-        createSnap(Type.EXPRESSION, 100, 0, true);
-        createSnap(Type.INSTRUCTION, 0, 100, true);
+        addSnap(new SnapRegion(this, Type.EXPRESSION) {
+            @Override
+            public Shape getAreaShape() {
+                Rectangle shape = new Rectangle(0, 50);
+                shape.setStroke(Color.WHITE);
+                shape.setStrokeWidth(10);
+                return shape;
+            }
+        }, 100, 0, true);
+        addSnap(new SnapRegion(this, Type.INSTRUCTION) {
+            @Override
+            public Shape getAreaShape() {
+                Rectangle shape = new Rectangle(50, 0);
+                shape.setStroke(Color.WHITE);
+                shape.setStrokeWidth(10);
+                return shape;
+            }
+        }, 0, 100, true);
 
     }
 

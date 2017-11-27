@@ -5,9 +5,9 @@
  */
 package net.algoid.visualsource;
 
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import net.algoid.visualsource.shapes.InstructionNode;
 import net.algoid.visualsource.shapes.SnapRegion;
 
@@ -19,6 +19,7 @@ public class VisualSourcePlaceHolder extends Pane {
 
     public VisualSourcePlaceHolder() {
         this.setPickOnBounds(true);
+        setStyle("-fx-background-color: #ececec");
     }
 
     public VisualSourcePlaceHolder(Node... children) {
