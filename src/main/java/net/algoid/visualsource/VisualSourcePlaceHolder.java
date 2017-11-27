@@ -26,10 +26,10 @@ public class VisualSourcePlaceHolder extends Pane {
     }
 
     // depth first search
-    public SnapRegion queryRegionIntersecton(InstructionNode query) {
+    public SnapRegion queryRegionIntersection(InstructionNode query) {
         for (Node child : getChildren()) {
             if (child != query && child instanceof InstructionNode) {
-                SnapRegion found = ((InstructionNode) child).queryRegionIntersecton(query);
+                SnapRegion found = ((InstructionNode) child).queryRegionIntersection(query);
                 if (found != null) {
                     return found;
                 }

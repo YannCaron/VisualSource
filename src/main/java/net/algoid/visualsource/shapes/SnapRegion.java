@@ -18,7 +18,7 @@ public class SnapRegion extends Region {
         EXPRESSION, INSTRUCTION
     }
 
-    public static final double SNAP_AREA_SIZE = 10;
+    public static final double SNAP_AREA_SIZE = 5;
     private final Type type;
     private final InstructionNode parentInstruction;
     private InstructionNode instruction;
@@ -37,8 +37,8 @@ public class SnapRegion extends Region {
     }
 
     public void setInstruction(InstructionNode instruction) {
+        getChildren().remove(this.instruction);
         this.instruction = instruction;
-        getChildren().clear();
         getChildren().add(instruction);
     }
 
@@ -47,8 +47,8 @@ public class SnapRegion extends Region {
     }
 
     public void removeInstruction() {
+        getChildren().remove(instruction);
         instruction = null;
-        getChildren().clear();
     }
 
     public boolean containsInstruction() {
@@ -56,11 +56,11 @@ public class SnapRegion extends Region {
     }
 
     // depth first search
-    public SnapRegion queryRegionIntersecton(InstructionNode query) {
+    public SnapRegion queryRegionIntersection(InstructionNode query) {
         if (containsInstruction()) {
 
             // chain of responcibility
-            SnapRegion found = getInstruction().queryRegionIntersecton(query);
+            SnapRegion found = getInstruction().queryRegionIntersection(query);
             if (found != null) {
                 return found;
             }
@@ -74,7 +74,7 @@ public class SnapRegion extends Region {
     }
 
     public boolean intersectsInstruction(InstructionNode query) {
-        Bounds queryInScene = query.localToScene(query.getAnchorBoundsInLocal());
+        Bounds queryInScene = query.localToScene(query.getBoundsInLocal());
         Bounds thisInScene = localToScene(getBoundsInLocal());
 
         return thisInScene.intersects(queryInScene);

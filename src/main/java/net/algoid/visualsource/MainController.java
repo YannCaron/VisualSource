@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import net.algoid.visualsource.shapes.If;
+import net.algoid.visualsource.shapes.SquareDummy;
 
 /**
  * FXML Controller class
@@ -25,11 +25,11 @@ public class MainController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        If shape1 = new If(visualSourcePlaceHolder, 10, 10);
-        If shape2 = new If(visualSourcePlaceHolder, 200, 10);
-        If shape3 = new If(visualSourcePlaceHolder, 400, 10);
-        If shape4 = new If(visualSourcePlaceHolder, 10, 200);
-        If shape5 = new If(visualSourcePlaceHolder, 200, 200);
+        SquareDummy shape1 = new SquareDummy(visualSourcePlaceHolder, 10, 10);
+        SquareDummy shape2 = new SquareDummy(visualSourcePlaceHolder, 200, 10);
+        SquareDummy shape3 = new SquareDummy(visualSourcePlaceHolder, 400, 10);
+        SquareDummy shape4 = new SquareDummy(visualSourcePlaceHolder, 10, 200);
+        SquareDummy shape5 = new SquareDummy(visualSourcePlaceHolder, 200, 200);
         visualSourcePlaceHolder.getChildren().addAll(shape1, shape2, shape3, shape4, shape5);
     }
 
