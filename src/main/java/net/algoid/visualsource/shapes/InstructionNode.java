@@ -174,12 +174,10 @@ public class InstructionNode extends Region {
             }
             
             if (snap != null) {
-                System.out.println("enter snap " + snap);
                 currentRegion = snap;
                 setOpacity(0.75);
                 currentRegion.showArea();
             } else if (currentRegion != null) {
-                System.out.println("exit snap" + currentRegion);
                 currentRegion = null;
                 setOpacity(1);
             }
