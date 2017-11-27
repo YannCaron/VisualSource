@@ -6,17 +6,13 @@
 package net.algoid.visualsource.shapes;
 
 import java.util.Random;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 import net.algoid.visualsource.shapes.SnapRegion.Type;
@@ -25,7 +21,7 @@ import net.algoid.visualsource.shapes.SnapRegion.Type;
  *
  * @author cyann
  */
-public class If extends InstructionPane {
+public class If extends InstructionNode {
 
     private static final double MOVE_EFFECT_DISPLACE = 4.0;
     private static final double MOVE_EFFECT_BLUR = 5.0;
@@ -77,12 +73,6 @@ public class If extends InstructionPane {
             }
         });
 
-        boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
-            @Override
-            public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
-                this_boundInParentChanged(observable, oldValue, newValue);
-            }
-        });
     }
 
     protected void this_onMousePresser(MouseEvent event) {
@@ -126,7 +116,7 @@ public class If extends InstructionPane {
         setLayoutX(x);
         setLayoutY(y);
     }
-
+    
     protected void this_onMouseReleased(MouseEvent event) {
         this.setEffect(null);
         setLayoutX(getLayoutX() + MOVE_EFFECT_DISPLACE);
@@ -140,7 +130,7 @@ public class If extends InstructionPane {
             setLayoutY(0);
 
             if (snap.containsInstruction()) {
-                InstructionPane existingChild = snap.getInstruction();
+                InstructionNode existingChild = snap.getInstruction();
                 Bounds childBounds = snap.getParent().localToParent(existingChild.getBoundsInLocal());
                 snap.removeInstruction();
 
@@ -154,11 +144,8 @@ public class If extends InstructionPane {
                 }
             }
             snap.setInstruction(this);
+            findFirstInstruction().toFront();            
         }
-    }
-
-    protected void this_boundInParentChanged(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
-        // TODO Check here collisions
     }
 
     private Color color = Color.color(Math.random(), Math.random(), Math.random());

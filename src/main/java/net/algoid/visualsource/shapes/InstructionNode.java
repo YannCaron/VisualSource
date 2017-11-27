@@ -11,24 +11,25 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import net.algoid.visualsource.VisualSourcePlaceHolder;
 
 /**
  *
  * @author cyann
  */
-public class InstructionPane extends Pane {
+public class InstructionNode extends Pane {
 
     private final Bounds anchorBounds;
     private final List<SnapRegion> chainableSnap;
 
-    public InstructionPane(double width, double height) {
+    public InstructionNode(double width, double height) {
         Bounds local = getBoundsInLocal();
         anchorBounds = new BoundingBox(local.getMinX(), local.getMinY(), width, height);
         chainableSnap = new ArrayList<>();
     }
 
     public final void createSnap(SnapRegion.Type type, double x, double y, boolean chainable) {
-        SnapRegion args = new SnapRegion(type);
+        SnapRegion args = new SnapRegion(this, type);
         getChildren().add(args);
         args.setLayoutX(x);
         args.setLayoutY(y);
@@ -39,7 +40,7 @@ public class InstructionPane extends Pane {
     }
 
     // depth first search
-    public SnapRegion queryRegionIntersecton(InstructionPane query) {
+    public SnapRegion queryRegionIntersecton(InstructionNode query) {
         for (Node child : getChildren()) {
             if (child instanceof SnapRegion) {
                 SnapRegion found = ((SnapRegion) child).queryRegionIntersecton(query);
@@ -63,6 +64,14 @@ public class InstructionPane extends Pane {
             }
         }
         return null;
+    }
+    
+    // chain of responsibility
+    public InstructionNode findFirstInstruction() {
+        if (getParent() instanceof SnapRegion) {
+            return ((SnapRegion)getParent()).getParentInstruction().findFirstInstruction();
+        }
+        return this;
     }
 
     public Bounds getAnchorBoundsInLocal() {

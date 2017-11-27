@@ -8,7 +8,7 @@ package net.algoid.visualsource;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import net.algoid.visualsource.shapes.InstructionPane;
+import net.algoid.visualsource.shapes.InstructionNode;
 import net.algoid.visualsource.shapes.SnapRegion;
 
 /**
@@ -26,10 +26,10 @@ public class VisualSourcePlaceHolder extends Pane {
     }
 
     // depth first search
-    public SnapRegion queryRegionIntersecton(InstructionPane query) {
+    public SnapRegion queryRegionIntersecton(InstructionNode query) {
         for (Node child : getChildren()) {
-            if (child != query && child instanceof InstructionPane) {
-                SnapRegion found = ((InstructionPane) child).queryRegionIntersecton(query);
+            if (child != query && child instanceof InstructionNode) {
+                SnapRegion found = ((InstructionNode) child).queryRegionIntersecton(query);
                 if (found != null) {
                     return found;
                 }
