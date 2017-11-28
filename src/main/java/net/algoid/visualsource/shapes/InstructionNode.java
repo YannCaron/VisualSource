@@ -161,26 +161,26 @@ public class InstructionNode extends Region {
         double x = pt.getX() - currentDeltaX;
         double y = pt.getY() - currentDeltaY;
 
-        x = limitValue(x, getBoundsInLocal().getWidth(), getParent().getBoundsInLocal().getWidth());
-        y = limitValue(y, getBoundsInLocal().getHeight(), getParent().getBoundsInLocal().getHeight());
+        x = limitValue(x, getBoundsInLocal().getWidth(), placeHolder.getBoundsInLocal().getWidth());
+        //y = limitValue(y, getBoundsInLocal().getHeight(), placeHolder.getBoundsInLocal().getHeight());
 
         setLayoutX(x);
         setLayoutY(y);
 
         SnapRegion snap = placeHolder.queryRegionIntersection(this);
         if (snap != currentRegion) {
-            if (currentRegion != null){
+            if (currentRegion != null) {
                 currentRegion.hideArea();
             }
-            
+
             if (snap != null) {
-                currentRegion = snap;
                 setOpacity(0.75);
-                currentRegion.showArea();
+                snap.showArea();
             } else if (currentRegion != null) {
-                currentRegion = null;
                 setOpacity(1);
             }
+
+            currentRegion = snap;
         }
     }
 
