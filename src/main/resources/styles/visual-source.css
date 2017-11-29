@@ -1,0 +1,29 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 29, 2017, 5:26:10 PM
+    Author     : cyann
+*/
+
+.in-action{
+    -fx-fill:#628fe2ff;
+    -fx-stroke:#4278dcff;
+}
+
+.in-control{
+    -fx-fill:#d5a404ff;
+    -fx-stroke:#af8703ff;
+}
+
+.in-text{
+    -fx-font:25px "Sans-Serif";
+    -fx-fill: white;
+}
+
+.snap-instruction{
+    -fx-fill: rgba(255,255,255,0.25);
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 10,0.95,0,0 );
+}

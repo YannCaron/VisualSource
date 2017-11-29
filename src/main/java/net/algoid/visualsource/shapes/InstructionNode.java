@@ -10,22 +10,23 @@ import java.util.List;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import javafx.scene.shape.Shape;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 
 /**
  *
  * @author cyann
  */
-public class InstructionNode extends Region {
+public abstract class InstructionNode extends Region {
 
     private final VisualSourcePlaceHolder placeHolder;
-    private final Canvas canvas;
+    private final Group view;
 
     private final Effect moveEffect;
 
@@ -45,8 +46,8 @@ public class InstructionNode extends Region {
         moveEffect = new GaussianBlur();
 
         // create canvas
-        canvas = new Canvas(100, 100);
-        getChildren().add(canvas);
+        view = new Group();
+        getChildren().add(view);
 
         // event management
         setOnMousePressed(this::this_onMousePresser);
@@ -58,10 +59,6 @@ public class InstructionNode extends Region {
     }
 
     // accessor
-    public Canvas getCanvas() {
-        return canvas;
-    }
-
     public Bounds getInitialBoundsInLocal() {
         return initialBoundsInLocal;
     }
@@ -91,7 +88,14 @@ public class InstructionNode extends Region {
         return v;
     }
 
+    // abstract
+
     // method
+    public final void setViewShape(Group shape) {
+        view.getChildren().clear();
+        view.getChildren().add(shape);
+    }
+    
     protected final void addSnap(SnapRegion snap, double x, double y, boolean chainable) {
         getChildren().add(snap);
         snap.setLayoutX(x);
@@ -162,7 +166,7 @@ public class InstructionNode extends Region {
         double y = pt.getY() - currentDeltaY;
 
         x = limitValue(x, getBoundsInLocal().getWidth(), placeHolder.getBoundsInLocal().getWidth());
-        //y = limitValue(y, getBoundsInLocal().getHeight(), placeHolder.getBoundsInLocal().getHeight());
+        y = limitValue(y, getBoundsInLocal().getHeight(), placeHolder.getBoundsInLocal().getHeight());
 
         setLayoutX(x);
         setLayoutY(y);

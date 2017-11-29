@@ -6,7 +6,7 @@
 package net.algoid.visualsource.shapes;
 
 import java.util.Random;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -49,16 +49,9 @@ public class SquareDummy extends InstructionNode {
             }
         }, 0, 100, true);
 
+        Rectangle rect = new Rectangle(100, 100);
+        rect.setFill(Color.color(Math.random(), Math.random(), Math.random()));
+        setViewShape(new Group(rect));
     }
 
-    private Color color = Color.color(Math.random(), Math.random(), Math.random());
-
-    @Override
-    protected void layoutChildren() {
-        GraphicsContext gc = getCanvas().getGraphicsContext2D();
-
-        gc.clearRect(0, 0, 100, 100);
-        gc.setFill(color);
-        gc.fillRect(0, 0, 100, 100);
-    }
 }

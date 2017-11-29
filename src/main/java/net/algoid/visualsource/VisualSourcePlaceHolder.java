@@ -7,7 +7,6 @@ package net.algoid.visualsource;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import net.algoid.visualsource.shapes.InstructionNode;
 import net.algoid.visualsource.shapes.SnapRegion;
 
@@ -19,11 +18,16 @@ public class VisualSourcePlaceHolder extends Pane {
 
     public VisualSourcePlaceHolder() {
         this.setPickOnBounds(true);
-        setStyle("-fx-background-color: #ececec");
+        initialize();
     }
 
     public VisualSourcePlaceHolder(Node... children) {
         super(children);
+        initialize();
+    }
+    
+    private final void initialize() {
+        getStylesheets().add(getClass().getResource("/styles/visual-source.css").toExternalForm());
     }
 
     // depth first search

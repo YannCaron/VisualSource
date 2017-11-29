@@ -28,9 +28,12 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
         Parent root = loader.load();
         MainController controler = loader.getController();
+        Scene scene = new Scene(root);
+        
+        scene.getStylesheets().add(getClass().getResource("/styles/skin.css").toExternalForm());
 
         primaryStage.setTitle("Scratch Code");
-        primaryStage.setScene(new Scene(root));
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         controler.setData();
