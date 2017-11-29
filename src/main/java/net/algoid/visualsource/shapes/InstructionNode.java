@@ -16,7 +16,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.shape.Shape;
+import javafx.scene.paint.Color;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 
 /**
@@ -26,7 +26,7 @@ import net.algoid.visualsource.VisualSourcePlaceHolder;
 public abstract class InstructionNode extends Region {
 
     private final VisualSourcePlaceHolder placeHolder;
-    private final Group view;
+    private Group view;
 
     private final Effect moveEffect;
 
@@ -89,13 +89,12 @@ public abstract class InstructionNode extends Region {
     }
 
     // abstract
-
     // method
     public final void setViewShape(Group shape) {
         view.getChildren().clear();
         view.getChildren().add(shape);
     }
-    
+
     protected final void addSnap(SnapRegion snap, double x, double y, boolean chainable) {
         getChildren().add(snap);
         snap.setLayoutX(x);
@@ -120,17 +119,34 @@ public abstract class InstructionNode extends Region {
         return null;
     }
 
-    // chain of responsibility
-    public SnapRegion findSnapOfType(SnapRegion.Type type) {
+    public SnapRegion getSnapOfType(SnapRegion.Type type) {
         for (SnapRegion snap : chainableSnap) {
             if (type == snap.getType()) {
-                if (snap.containsInstruction()) {
-                    return snap.getInstruction().findSnapOfType(type);
-                }
                 return snap;
             }
         }
         return null;
+    }
+
+    // chain of responsibility
+    public SnapRegion findSnapOfType(SnapRegion.Type type) {
+        SnapRegion snapOfType = getSnapOfType(type);
+        if (snapOfType.containsInstruction()) {
+            return snapOfType.getInstruction().findSnapOfType(type);
+        }
+
+        return snapOfType;
+    }
+
+    public abstract int getViewHeight();
+
+    public int getChainHeight(SnapRegion.Type type) {
+        int value = getViewHeight();
+        SnapRegion snapOfType = getSnapOfType(type);
+        if (snapOfType != null && snapOfType.containsInstruction()) {
+            value += snapOfType.getInstruction().getChainHeight(type);
+        }
+        return value;
     }
 
     // chain of responsibility

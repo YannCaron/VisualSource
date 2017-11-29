@@ -26,9 +26,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="142.11208"
-     inkscape:cy="913.61155"
+     inkscape:zoom="1.4"
+     inkscape:cx="303.06089"
+     inkscape:cy="1006.1621"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -2150,13 +2150,6 @@ VJT0Z00MHRw7vBa92FFFFZHaf//Z
        id="event"
        inkscape:connector-curvature="0"
        inkscape:label="event" />
-    <path
-       style="fill:#d5a404;fill-opacity:1"
-       d="m 75.787303,292.93405 0,-15.4297 -30.796883,0 c -1.05817,2.99296 -3.88603,4.99554 -7.06054,5 -3.17523,-0.004 -6.00409,-2.00636 -7.0625,-5 l -15.4375,0 0,-45 15.4375,0 c 1.05841,2.99364 3.88727,4.99637 7.0625,5 3.17451,-0.004 6.00237,-2.00704 7.06054,-5 l 95.00977,0 0,-45 -110.43945,0 c -1.05817,2.99296 -3.88604,4.99555 -7.06055,5 -3.17523,-0.004 -6.00409,-2.00636 -7.0625,-5 l -15.4375,0 -1.9e-4,0 0,105.4297 15.43769,0 c 1.05841,2.99364 3.88727,4.99637 7.0625,5 3.17451,-0.004 6.00238,-2.00704 7.06055,-5 z"
-       id="control"
-       inkscape:connector-curvature="0"
-       inkscape:label="controlold"
-       sodipodi:nodetypes="cccccccccccccccccccccc" />
     <path
        style="fill:#628fe2;fill-opacity:1"
        d="m 192.8379,70.921649 0,44.999991 15.4375,0 a 7.5,7.5 0 0 0 7.0625,5 7.5,7.5 0 0 0 7.06055,-5 l 110.43945,0 0,-44.999991 -110.43945,0 a 7.5,7.5 0 0 1 -7.06055,5 7.5,7.5 0 0 1 -7.0625,-5 l -15.4375,0 z"

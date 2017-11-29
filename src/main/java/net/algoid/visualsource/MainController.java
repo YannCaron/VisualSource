@@ -38,7 +38,7 @@ public class MainController implements Initializable {
         visualSourcePlaceHolder.getChildren().addAll(action1, action2, action3, action4, action5);
 
         UnaryControl control1 = new UnaryControl(visualSourcePlaceHolder, "loop", 10, 200);
-        UnaryControl control2 = new UnaryControl(visualSourcePlaceHolder, "move", 250, 200);
+        UnaryControl control2 = new UnaryControl(visualSourcePlaceHolder, "while", 250, 200);
 
         visualSourcePlaceHolder.getChildren().addAll(control1, control2);
 

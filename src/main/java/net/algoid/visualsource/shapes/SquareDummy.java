@@ -54,4 +54,9 @@ public class SquareDummy extends InstructionNode {
         setViewShape(new Group(rect));
     }
 
+    @Override
+    public int getViewHeight() {
+        return 100;
+    }
+
 }

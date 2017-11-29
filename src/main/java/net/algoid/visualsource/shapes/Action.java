@@ -7,12 +7,9 @@ package net.algoid.visualsource.shapes;
 
 import javafx.geometry.VPos;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
-import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Text;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 
@@ -20,15 +17,12 @@ import net.algoid.visualsource.VisualSourcePlaceHolder;
  *
  * @author cyann
  */
-public class Action extends InstructionNode {
+public class Action extends InstructionNode implements Constants {
 
-    public static final int WIDTH = 250;
-    public static final int HEIGHT = 45;
-    
     private final String name;
 
     public Action(VisualSourcePlaceHolder placeHolder, String name, double x, double y) {
-        super(placeHolder, WIDTH, HEIGHT);
+        super(placeHolder, INSTRUCTION_WIDTH / 2, BORDER);
         this.name = name;
 
         setLayoutX(x);
@@ -45,12 +39,11 @@ public class Action extends InstructionNode {
                 + "a 7.5,7.5 0 0 0 7,5 7.5,7.5 0 0 0 7,-5 "
                 + "L %1$d,%2$d %1$d,0 30,0 "
                 + "A 7.5,7.5 0 0 1 22.5,5 7.5,7.5 0 0 1 15,0 "
-                + "L 0,0 Z", WIDTH, HEIGHT));
+                + "L 0,0 Z", INSTRUCTION_WIDTH, HEIGHT));
         shape.getStyleClass().add("in-action");
         shape.getStyleClass().add(String.format("in-action-%s", name.replace(" ", "-")));
-
         setViewShape(new Group(shape, text));
-        
+
         addSnap(new SnapRegion(this, SnapRegion.Type.INSTRUCTION) {
             @Override
             public Shape getAreaShape() {
@@ -59,6 +52,11 @@ public class Action extends InstructionNode {
                 return shape;
             }
         }, 0, HEIGHT, true);
+    }
+
+    @Override
+    public int getViewHeight() {
+        return HEIGHT;
     }
 
 }

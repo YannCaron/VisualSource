@@ -5,6 +5,7 @@
  */
 package net.algoid.visualsource.shapes;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.VPos;
@@ -19,11 +20,7 @@ import net.algoid.visualsource.VisualSourcePlaceHolder;
  *
  * @author cyann
  */
-public class UnaryControl extends InstructionNode {
-
-    public static final int WIDTH = 200;
-    public static final int HEIGHT = 45;
-    public static final int BORDER = 15;
+public class UnaryControl extends InstructionNode implements Constants{
 
     private final String name;
 
@@ -32,7 +29,7 @@ public class UnaryControl extends InstructionNode {
     private final SVGPath shape;
 
     public UnaryControl(VisualSourcePlaceHolder placeHolder, String name, double x, double y) {
-        super(placeHolder, WIDTH, HEIGHT);
+        super(placeHolder, CONTAINER_WIDTH / 2, HEIGHT);
         this.name = name;
 
         setLayoutX(x);
@@ -58,27 +55,32 @@ public class UnaryControl extends InstructionNode {
                 return shape;
             }
         };
+
         contentSnap.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                int height = HEIGHT + 10 + newValue.intValue();
+                int height = getViewHeight();
 
-                shape.setContent(
-                        String.format("m 0,0 0,%3$d 15,0 "
-                                + "a 7.5,7.5 0 0 0 7,5 "
-                                + "a 7.5,7.5 0 0 0 7,-5 "
-                                + "L 75,%3$d 75,%4$d 44.5,%4$d "
-                                + "a -7.5,7.5 0 0 1 -7, 5 "
-                                + "a -7.5,7.5 0 0 1 -7, -5 "
-                                + "L 15,%4$d 15,45 30.4375,45 "
-                                + "a 7.5,7.5 0 0 0 7,5 "
-                                + "a 7.5,7.5 0 0 0 7,-5 "
-                                + "L 140,45 140,0 29.560547,0 "
-                                + "A 7.5,7.5 0 0 1 22.5,5 "
-                                + "A 7.5,7.5 0 0 1 15,0  Z",
-                                WIDTH, HEIGHT, height, height - BORDER));
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        shape.setContent(String.format("m 0,0 0,%3$d 15,0 "
+                                        + "a 7.5,7.5 0 0 0 7,5 "
+                                        + "a 7.5,7.5 0 0 0 7,-5 "
+                                        + "L 75,%3$d 75,%4$d 44.5,%4$d "
+                                        + "a -7.5,7.5 0 0 1 -7, 5 "
+                                        + "a -7.5,7.5 0 0 1 -7, -5 "
+                                        + "L 15,%4$d 15,45 30.4375,45 "
+                                        + "a 7.5,7.5 0 0 0 7,5 "
+                                        + "a 7.5,7.5 0 0 0 7,-5 "
+                                        + "L %1$d,45 %1$d,0 29.560547,0 "
+                                        + "A 7.5,7.5 0 0 1 22.5,5 "
+                                        + "A 7.5,7.5 0 0 1 15,0  Z",
+                                        CONTAINER_WIDTH, HEIGHT, height, height - BORDER));
 
-                instructionSnap.setLayoutY(height);
+                        instructionSnap.setLayoutY(height);
+                    }
+                });
             }
         });
 
@@ -94,6 +96,15 @@ public class UnaryControl extends InstructionNode {
         };
         addSnap(instructionSnap, 0, HEIGHT * 2 + BORDER, true);
 
+    }
+
+    @Override
+    public int getViewHeight() {
+        int height = HEIGHT + BORDER;
+        if (contentSnap.containsInstruction()) {
+            height += contentSnap.getInstruction().getChainHeight(SnapRegion.Type.INSTRUCTION);
+        }
+        return height;
     }
 
 }
