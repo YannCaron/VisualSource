@@ -42,7 +42,7 @@ public abstract class InstructionNode extends Region implements Constants {
         initialBoundsInLocal = new BoundingBox(0, 0, SNAP_WIDTH, SNAP_HEIGHT);
 
         // create effects
-        moveEffect = new GaussianBlur();
+        moveEffect = new GaussianBlur(5);
 
         // create canvas
         view = new Group();
@@ -77,11 +77,11 @@ public abstract class InstructionNode extends Region implements Constants {
     }
 
     private double limitValue(double v, double size, double max) {
-        if (v < 0) {
-            return 0;
+        if (v < BORDER) {
+            return BORDER;
         }
-        if (v + size >= max) {
-            return max - size;
+        if (v + size >= max - BORDER) {
+            return max - BORDER - size;
         }
 
         return v;
@@ -128,10 +128,10 @@ public abstract class InstructionNode extends Region implements Constants {
         return snapOfType;
     }
 
-    public abstract int getViewHeight();
+    public abstract double getViewHeight();
 
-    public int getChainHeight(SnapRegion.Type type) {
-        int value = getViewHeight();
+    public double getChainHeight(SnapRegion.Type type) {
+        double value = getViewHeight();
         SnapRegion snapOfType = chainableSnap.get(type);
         if (snapOfType != null && snapOfType.containsInstruction()) {
             value += snapOfType.getInstruction().getChainHeight(type);
@@ -217,6 +217,7 @@ public abstract class InstructionNode extends Region implements Constants {
                     existingChild.setLayoutX(childBounds.getMinX() + childBounds.getWidth() / 2);
                     existingChild.setLayoutY(childBounds.getMinY() + childBounds.getHeight() / 2);
                 }
+
             }
             snap.setInstruction(this);
             findFirstInstruction().toFront();

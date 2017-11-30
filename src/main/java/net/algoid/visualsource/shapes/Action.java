@@ -30,16 +30,17 @@ public class Action extends InstructionNode implements Constants {
 
         Text text = new Text(name);
         text.getStyleClass().add("in-text");
-        text.setX(50);
+        text.setX(BORDER);
         text.setTextOrigin(VPos.CENTER);
         text.setY(HEIGHT / 2 - 1);
+        final double width = text.getLayoutBounds().getWidth() + BORDER * 3;
 
         SVGPath shape = new SVGPath();
-        shape.setContent(String.format("m 0,0 0,%2$d 15,0 "
+        shape.setContent(String.format("m 0,0 0,%2$f 15,0 "
                 + "a 7.5,7.5 0 0 0 7,5 7.5,7.5 0 0 0 7,-5 "
-                + "L %1$d,%2$d %1$d,0 30,0 "
+                + "L %1$f,%2$f %1$f,0 30,0 "
                 + "A 7.5,7.5 0 0 1 22.5,5 7.5,7.5 0 0 1 15,0 "
-                + "L 0,0 Z", INSTRUCTION_WIDTH, HEIGHT));
+                + "L 0,0 Z", width, HEIGHT));
         shape.getStyleClass().add("in");
         shape.getStyleClass().add("in-action");
         shape.getStyleClass().add(String.format("in-action-%s", name.replace(" ", "-")));
@@ -56,7 +57,7 @@ public class Action extends InstructionNode implements Constants {
     }
 
     @Override
-    public int getViewHeight() {
+    public double getViewHeight() {
         return HEIGHT;
     }
 

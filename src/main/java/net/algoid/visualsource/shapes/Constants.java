@@ -11,11 +11,9 @@ package net.algoid.visualsource.shapes;
  */
 public interface Constants {
 
-    public static final int INSTRUCTION_WIDTH = 250;
-    public static final int CONTAINER_WIDTH = 200;
-    public static final int HEIGHT = 45;
-    public static final int BORDER = 15;
-    public static final int SNAP_WIDTH = 45;
-    public static final int SNAP_HEIGHT = 1;
+    public static final double HEIGHT = 35;
+    public static final double BORDER = 15;
+    public static final double SNAP_WIDTH = 45;
+    public static final double SNAP_HEIGHT = 1;
 
 }

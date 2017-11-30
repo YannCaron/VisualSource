@@ -32,7 +32,7 @@ public class Main extends Application {
         
         scene.getStylesheets().add(getClass().getResource("/styles/skin.css").toExternalForm());
 
-        primaryStage.setTitle("Scratch Code");
+        primaryStage.setTitle("Visual Source FX");
         primaryStage.setScene(scene);
         primaryStage.show();
 
