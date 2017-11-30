@@ -10,7 +10,6 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import net.algoid.visualsource.shapes.Action;
-import net.algoid.visualsource.shapes.SquareDummy;
 import net.algoid.visualsource.shapes.UnaryControl;
 
 /**

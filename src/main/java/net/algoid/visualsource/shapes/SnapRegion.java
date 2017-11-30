@@ -19,7 +19,6 @@ public abstract class SnapRegion extends Region {
         EXPRESSION, INSTRUCTION
     }
 
-    public static final double SNAP_AREA_SIZE = 10;
     private final Type type;
     private final InstructionNode parentInstruction;
     private InstructionNode instruction;

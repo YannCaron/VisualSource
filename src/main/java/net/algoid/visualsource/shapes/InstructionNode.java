@@ -5,8 +5,8 @@
  */
 package net.algoid.visualsource.shapes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -16,14 +16,13 @@ import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
 
 /**
  *
  * @author cyann
  */
-public abstract class InstructionNode extends Region {
+public abstract class InstructionNode extends Region implements Constants {
 
     private final VisualSourcePlaceHolder placeHolder;
     private Group view;
@@ -33,14 +32,14 @@ public abstract class InstructionNode extends Region {
     private double currentDeltaX = 0;
     private double currentDeltaY = 0;
 
-    private final List<SnapRegion> chainableSnap;
+    private final Map<SnapRegion.Type, SnapRegion> chainableSnap;
     private final Bounds initialBoundsInLocal;
 
     // constructor
-    public InstructionNode(VisualSourcePlaceHolder placeHolder, double width, double height) {
+    public InstructionNode(VisualSourcePlaceHolder placeHolder) {
         this.placeHolder = placeHolder;
-        chainableSnap = new ArrayList<>();
-        initialBoundsInLocal = new BoundingBox(0, 0, width, height);
+        chainableSnap = new HashMap<>();
+        initialBoundsInLocal = new BoundingBox(0, 0, SNAP_WIDTH, SNAP_HEIGHT);
 
         // create effects
         moveEffect = new GaussianBlur();
@@ -101,7 +100,7 @@ public abstract class InstructionNode extends Region {
         snap.setLayoutY(y);
 
         if (chainable) {
-            chainableSnap.add(snap);
+            chainableSnap.put(snap.getType(), snap);
         }
     }
 
@@ -119,19 +118,10 @@ public abstract class InstructionNode extends Region {
         return null;
     }
 
-    public SnapRegion getSnapOfType(SnapRegion.Type type) {
-        for (SnapRegion snap : chainableSnap) {
-            if (type == snap.getType()) {
-                return snap;
-            }
-        }
-        return null;
-    }
-
     // chain of responsibility
     public SnapRegion findSnapOfType(SnapRegion.Type type) {
-        SnapRegion snapOfType = getSnapOfType(type);
-        if (snapOfType.containsInstruction()) {
+        SnapRegion snapOfType = chainableSnap.get(type);
+        if (snapOfType != null && snapOfType.containsInstruction()) {
             return snapOfType.getInstruction().findSnapOfType(type);
         }
 
@@ -142,7 +132,7 @@ public abstract class InstructionNode extends Region {
 
     public int getChainHeight(SnapRegion.Type type) {
         int value = getViewHeight();
-        SnapRegion snapOfType = getSnapOfType(type);
+        SnapRegion snapOfType = chainableSnap.get(type);
         if (snapOfType != null && snapOfType.containsInstruction()) {
             value += snapOfType.getInstruction().getChainHeight(type);
         }

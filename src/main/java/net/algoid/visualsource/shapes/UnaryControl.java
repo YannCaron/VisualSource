@@ -15,6 +15,8 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import net.algoid.visualsource.VisualSourcePlaceHolder;
+import static net.algoid.visualsource.shapes.Constants.BORDER;
+import static net.algoid.visualsource.shapes.Constants.HEIGHT;
 
 /**
  *
@@ -29,7 +31,7 @@ public class UnaryControl extends InstructionNode implements Constants{
     private final SVGPath shape;
 
     public UnaryControl(VisualSourcePlaceHolder placeHolder, String name, double x, double y) {
-        super(placeHolder, CONTAINER_WIDTH / 2, HEIGHT);
+        super(placeHolder);
         this.name = name;
 
         setLayoutX(x);
@@ -42,6 +44,7 @@ public class UnaryControl extends InstructionNode implements Constants{
         text.setY(HEIGHT / 2 - 1);
 
         shape = new SVGPath();
+        shape.getStyleClass().add("in");
         shape.getStyleClass().add("in-control");
         shape.getStyleClass().add(String.format("in-control-%s", name.replace(" ", "-")));
 
@@ -51,7 +54,7 @@ public class UnaryControl extends InstructionNode implements Constants{
             @Override
             public Shape getAreaShape() {
                 Circle shape = new Circle(22, -2, 2);
-                shape.getStyleClass().add("snap-instruction");
+                shape.getStyleClass().add("snap-tip");
                 return shape;
             }
         };
@@ -59,11 +62,12 @@ public class UnaryControl extends InstructionNode implements Constants{
         contentSnap.heightProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                int height = getViewHeight();
 
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
+                        int height = getViewHeight();
+                        
                         shape.setContent(String.format("m 0,0 0,%3$d 15,0 "
                                         + "a 7.5,7.5 0 0 0 7,5 "
                                         + "a 7.5,7.5 0 0 0 7,-5 "
@@ -90,7 +94,7 @@ public class UnaryControl extends InstructionNode implements Constants{
             @Override
             public Shape getAreaShape() {
                 Circle shape = new Circle(22, -2, 2);
-                shape.getStyleClass().add("snap-instruction");
+                shape.getStyleClass().add("snap-tip");
                 return shape;
             }
         };

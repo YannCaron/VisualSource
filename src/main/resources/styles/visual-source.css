@@ -11,19 +11,22 @@ and open the template in the editor.
 .in-action{
     -fx-fill:#628fe2ff;
     -fx-stroke:#4278dcff;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );
 }
 
 .in-control{
     -fx-fill:#d5a404ff;
     -fx-stroke:#af8703ff;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );
 }
 
 .in-text{
     -fx-font:25px "Sans-Serif";
-    -fx-fill: white;
+    -fx-fill: rgba(255,255,255,1);
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 10,0,0,0 );
 }
 
-.snap-instruction{
+.snap-tip{
     -fx-fill: rgba(255,255,255,0.25);
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 10,0.95,0,0 );
 }

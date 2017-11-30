@@ -22,7 +22,7 @@ public class Action extends InstructionNode implements Constants {
     private final String name;
 
     public Action(VisualSourcePlaceHolder placeHolder, String name, double x, double y) {
-        super(placeHolder, INSTRUCTION_WIDTH / 2, BORDER);
+        super(placeHolder);
         this.name = name;
 
         setLayoutX(x);
@@ -40,6 +40,7 @@ public class Action extends InstructionNode implements Constants {
                 + "L %1$d,%2$d %1$d,0 30,0 "
                 + "A 7.5,7.5 0 0 1 22.5,5 7.5,7.5 0 0 1 15,0 "
                 + "L 0,0 Z", INSTRUCTION_WIDTH, HEIGHT));
+        shape.getStyleClass().add("in");
         shape.getStyleClass().add("in-action");
         shape.getStyleClass().add(String.format("in-action-%s", name.replace(" ", "-")));
         setViewShape(new Group(shape, text));
@@ -48,7 +49,7 @@ public class Action extends InstructionNode implements Constants {
             @Override
             public Shape getAreaShape() {
                 Circle shape = new Circle(22, -2, 2);
-                shape.getStyleClass().add("snap-instruction");
+                shape.getStyleClass().add("snap-tip");
                 return shape;
             }
         }, 0, HEIGHT, true);
