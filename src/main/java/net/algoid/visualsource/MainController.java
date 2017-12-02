@@ -14,6 +14,9 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.BoundingBox;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import net.algoid.visualsource.shapes.Action;
 import net.algoid.visualsource.shapes.UnaryControl;
 
@@ -47,6 +50,10 @@ public class MainController implements Initializable {
         visualSourcePane.getChildren().addAll(control1, control2);
 
         HangableRegion region1 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
+            @Override
+            protected Node getGraphic() {
+                return new Rectangle(100, 100, Color.BLUEVIOLET);
+            }
         };
 //        region1.getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
         Hook hook = region1.addHook(Hook.Direction.horizontal, 100, 0, true);
@@ -71,13 +78,19 @@ public class MainController implements Initializable {
         });
 
         HangableRegion region2 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
-
+            @Override
+            protected Node getGraphic() {
+                return new Rectangle(100, 100, Color.BEIGE);
+            }
         };
         //region2.getChildren().add(new Rectangle(75, 75, Color.GRAY));
         region2.addHook(Hook.Direction.horizontal, 100, 0, true);
 
         HangableRegion region3 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
-
+            @Override
+            protected Node getGraphic() {
+                return new Rectangle(100, 100, Color.BLANCHEDALMOND);
+            }
         };
         //region3.getChildren().add(new Rectangle(50, 50, Color.ALICEBLUE));
         region3.addHook(Hook.Direction.horizontal, 100, 0, true);

@@ -9,13 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
-import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -48,7 +49,7 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
     }
 
     // attribut
-//    private final Group view;
+    private final Pane graphic;
     protected final AbstractVisualSource placeHolder;
     private final Map<Hook.Direction, Hook> chainableHook;
     private final List<Hook> hooks;
@@ -65,13 +66,24 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
                 System.out.println("Visibility changed !");
             }
         });
-
-//        view = new Group();
         
-        getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
-
+        //getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
+        graphic = new Pane();
+        getChildren().add(graphic);
+        
+        Platform.runLater(this::applyGraphic);
     }
+    
+    // private
+    private void applyGraphic() {
+        graphic.getChildren().clear();
+        graphic.getChildren().add(getGraphic());
+    }
+    
+    // abstract
+    protected abstract Node getGraphic();
 
+    // property
     // chain of responsibility
     public LinkableRegion getHead() {
         if (getParent() instanceof Hook) {
@@ -80,7 +92,6 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
         return this;
     }
 
-    // property
     public AbstractVisualSource getPlaceHolder() {
         return placeHolder;
     }
@@ -95,7 +106,8 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
         if (chainable) {
             chainableHook.put(hook.getDirection(), hook);
         }
-
+        
+        hook.toBack();
         return hook;
     }
 
