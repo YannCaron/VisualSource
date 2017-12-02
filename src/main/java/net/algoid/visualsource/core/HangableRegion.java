@@ -41,12 +41,12 @@ public abstract class HangableRegion extends DraggableRegion {
             Hook hook = placeHolder.queryHookIntersection(this);
             if (hook != previousHook) {
                 if (previousHook != null) {
-                    previousHook.fireEvent(new Hook.HookEvent(previousHook, OUT));
+                    previousHook.fireEvent(new Hook.HookEvent(previousHook, this, OUT));
                 }
 
                 if (hook != null) {
                     this.fireEvent(new LinkableRegionEvent(this, LinkableRegionEvent.OVER));
-                    hook.fireEvent(new Hook.HookEvent(hook, Hook.HookEvent.OVER));
+                    hook.fireEvent(new Hook.HookEvent(hook, this, Hook.HookEvent.OVER));
                 } else if (previousHook != null) {
                     this.fireEvent(new LinkableRegionEvent(this, LinkableRegionEvent.OUT));
                 }
@@ -79,7 +79,7 @@ public abstract class HangableRegion extends DraggableRegion {
             this.fireEvent(new LinkableRegionEvent(this, LinkableRegionEvent.OUT));
 
             if (previousHook != null) {
-                previousHook.fireEvent(new Hook.HookEvent(previousHook, Hook.HookEvent.OUT));
+                previousHook.fireEvent(new Hook.HookEvent(previousHook, this, Hook.HookEvent.OUT));
             }
         }
     }

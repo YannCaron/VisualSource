@@ -23,16 +23,24 @@ public class Hook extends Region implements HookQueryable {
 
         public static final EventType<HookEvent> OVER = new EventType<>("LINKABLE_OVER_HOOK");
         public static final EventType<HookEvent> OUT = new EventType<>("LINKABLE_OUT_HOOK");
+        public static final EventType<HookEvent> PUT_IN = new EventType<>("LINKABLE_PUT_IN");
+        public static final EventType<HookEvent> PUT_OUT = new EventType<>("LINKABLE_PUT_OUT");
 
         private final Hook hook;
+        private final LinkableRegion region;
 
-        public HookEvent(Hook hook, EventType<? extends HookEvent> eventType) {
+        public HookEvent(Hook hook, LinkableRegion region, EventType<? extends HookEvent> eventType) {
             super(hook, null, eventType);
             this.hook = hook;
+            this.region = region;
         }
 
         public Hook getHook() {
             return hook;
+        }
+
+        public LinkableRegion getRegion() {
+            return region;
         }
 
     }
@@ -69,6 +77,7 @@ public class Hook extends Region implements HookQueryable {
     public void setChild(LinkableRegion child) {
         getChildren().clear();
         getChildren().add(child);
+        fireEvent(new HookEvent(this, child, HookEvent.PUT_IN));
     }
 
     public LinkableRegion getChild() {
@@ -81,6 +90,7 @@ public class Hook extends Region implements HookQueryable {
 
     // method
     public void removeChild() {
+        fireEvent(new HookEvent(this, getChild(), HookEvent.PUT_OUT));
         getChildren().clear();
     }
 
