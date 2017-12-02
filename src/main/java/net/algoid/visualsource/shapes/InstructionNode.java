@@ -16,7 +16,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import net.algoid.visualsource.VisualSourcePlaceHolder;
+import net.algoid.visualsource.core.AbstractVisualSource;
 
 /**
  *
@@ -24,7 +24,7 @@ import net.algoid.visualsource.VisualSourcePlaceHolder;
  */
 public abstract class InstructionNode extends Region implements Constants {
 
-    private final VisualSourcePlaceHolder placeHolder;
+    private final AbstractVisualSource placeHolder;
     private Group view;
 
     private final Effect moveEffect;
@@ -36,7 +36,7 @@ public abstract class InstructionNode extends Region implements Constants {
     private final Bounds initialBoundsInLocal;
 
     // constructor
-    public InstructionNode(VisualSourcePlaceHolder placeHolder) {
+    public InstructionNode(AbstractVisualSource placeHolder) {
         this.placeHolder = placeHolder;
         chainableSnap = new HashMap<>();
         initialBoundsInLocal = new BoundingBox(0, 0, SNAP_WIDTH, SNAP_HEIGHT);

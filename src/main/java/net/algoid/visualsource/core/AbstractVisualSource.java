@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.core;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import net.algoid.visualsource.shapes.InstructionNode;
@@ -14,27 +15,22 @@ import net.algoid.visualsource.shapes.SnapRegion;
  *
  * @author cyann
  */
-public class VisualSourcePlaceHolder extends Pane implements HookQueryable {
+public abstract class AbstractVisualSource extends Pane implements HookQueryable {
 
     private boolean anyHookHandeled;
 
-    public VisualSourcePlaceHolder() {
+    public AbstractVisualSource() {
         this.setPickOnBounds(true);
-        initialize();
         anyHookHandeled = true;
+        
+        Platform.runLater(this::initialize);
     }
 
-    public VisualSourcePlaceHolder(Node... children) {
-        super(children);
-        initialize();
-    }
-
-    private final void initialize() {
-        getStylesheets().add(getClass().getResource("/styles/visual-source.css").toExternalForm());
-    }
+    // abstract
+    protected abstract void initialize();
 
     // property
-    public boolean hasAnyHookHandeled() {
+    boolean hasAnyHookHandeled() {
         return anyHookHandeled;
     }
 

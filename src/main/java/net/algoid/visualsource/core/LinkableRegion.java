@@ -3,23 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
  * @author cyann
  */
-public abstract class LinkableRegion extends Pane implements HookQueryable {
+public abstract class LinkableRegion extends Region implements HookQueryable {
 
     // inner
     public static class LinkableRegionEvent extends Event {
@@ -43,15 +48,28 @@ public abstract class LinkableRegion extends Pane implements HookQueryable {
     }
 
     // attribut
-    protected final VisualSourcePlaceHolder placeHolder;
+//    private final Group view;
+    protected final AbstractVisualSource placeHolder;
     private final Map<Hook.Direction, Hook> chainableHook;
     private final List<Hook> hooks;
 
     // constructor
-    public LinkableRegion(VisualSourcePlaceHolder placeHolder) {
+    public LinkableRegion(AbstractVisualSource placeHolder) {
         this.placeHolder = placeHolder;
         chainableHook = new HashMap<>();
         hooks = new ArrayList<>();
+
+        visibleProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                System.out.println("Visibility changed !");
+            }
+        });
+
+//        view = new Group();
+        
+        getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
+
     }
 
     // chain of responsibility
@@ -63,7 +81,7 @@ public abstract class LinkableRegion extends Pane implements HookQueryable {
     }
 
     // property
-    public VisualSourcePlaceHolder getPlaceHolder() {
+    public AbstractVisualSource getPlaceHolder() {
         return placeHolder;
     }
 

@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.core;
 
 import javafx.geometry.Bounds;
 import javafx.scene.input.MouseEvent;
-import static net.algoid.visualsource.Hook.HookEvent.OUT;
+import static net.algoid.visualsource.core.Hook.HookEvent.OUT;
 
 /**
  *
@@ -20,7 +20,7 @@ public abstract class HangableRegion extends DraggableRegion {
     private Hook previousHook = null;
 
     // constructor
-    public HangableRegion(VisualSourcePlaceHolder placeHolder, Bounds hangBounds) {
+    public HangableRegion(AbstractVisualSource placeHolder, Bounds hangBounds) {
         super(placeHolder);
         this.hangBoundsInLocal = hangBounds;
 

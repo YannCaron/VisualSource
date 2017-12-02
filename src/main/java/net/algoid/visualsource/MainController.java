@@ -5,14 +5,15 @@
  */
 package net.algoid.visualsource;
 
+import net.algoid.visualsource.core.AbstractVisualSource;
+import net.algoid.visualsource.core.LinkableRegion;
+import net.algoid.visualsource.core.Hook;
+import net.algoid.visualsource.core.HangableRegion;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.BoundingBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import net.algoid.visualsource.shapes.Action;
 import net.algoid.visualsource.shapes.UnaryControl;
 
@@ -24,7 +25,7 @@ import net.algoid.visualsource.shapes.UnaryControl;
 public class MainController implements Initializable {
 
     @FXML
-    VisualSourcePlaceHolder visualSourcePlaceHolder;
+    AbstractVisualSource visualSourcePane;
 
     /**
      * Initializes the controller class.
@@ -32,22 +33,22 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        Action action1 = new Action(visualSourcePlaceHolder, "move", 10, 10);
-        Action action2 = new Action(visualSourcePlaceHolder, "turn left", 250, 10);
-        Action action3 = new Action(visualSourcePlaceHolder, "turn right", 500, 10);
-        Action action4 = new Action(visualSourcePlaceHolder, "jump", 10, 100);
-        Action action5 = new Action(visualSourcePlaceHolder, "move", 250, 100);
+        Action action1 = new Action(visualSourcePane, "move", 10, 10);
+        Action action2 = new Action(visualSourcePane, "turn left", 250, 10);
+        Action action3 = new Action(visualSourcePane, "turn right", 500, 10);
+        Action action4 = new Action(visualSourcePane, "jump", 10, 100);
+        Action action5 = new Action(visualSourcePane, "move", 250, 100);
 
-        visualSourcePlaceHolder.getChildren().addAll(action1, action2, action3, action4, action5);
+        visualSourcePane.getChildren().addAll(action1, action2, action3, action4, action5);
 
-        UnaryControl control1 = new UnaryControl(visualSourcePlaceHolder, "loop", 10, 200);
-        UnaryControl control2 = new UnaryControl(visualSourcePlaceHolder, "while", 250, 200);
+        UnaryControl control1 = new UnaryControl(visualSourcePane, "loop", 10, 200);
+        UnaryControl control2 = new UnaryControl(visualSourcePane, "while", 250, 200);
 
-        visualSourcePlaceHolder.getChildren().addAll(control1, control2);
+        visualSourcePane.getChildren().addAll(control1, control2);
 
-        HangableRegion region1 = new HangableRegion(visualSourcePlaceHolder, new BoundingBox(0, 0, 50, 50)) {
+        HangableRegion region1 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
         };
-        region1.getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
+//        region1.getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
         Hook hook = region1.addHook(Hook.Direction.horizontal, 100, 0, true);
         hook.setOnOverEvent((Hook.HookEvent event) -> {
             System.out.println("Over " + event);
@@ -69,19 +70,19 @@ public class MainController implements Initializable {
             System.out.println("Drag stopped " + event);
         });
 
-        HangableRegion region2 = new HangableRegion(visualSourcePlaceHolder, new BoundingBox(0, 0, 50, 50)) {
+        HangableRegion region2 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
 
         };
-        region2.getChildren().add(new Rectangle(75, 75, Color.GRAY));
-        region2.addHook(Hook.Direction.horizontal, 75, 0, true);
+        //region2.getChildren().add(new Rectangle(75, 75, Color.GRAY));
+        region2.addHook(Hook.Direction.horizontal, 100, 0, true);
 
-        HangableRegion region3 = new HangableRegion(visualSourcePlaceHolder, new BoundingBox(0, 0, 50, 50)) {
+        HangableRegion region3 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
 
         };
-        region3.getChildren().add(new Rectangle(50, 50, Color.ALICEBLUE));
-        region3.addHook(Hook.Direction.horizontal, 50, 0, true);
+        //region3.getChildren().add(new Rectangle(50, 50, Color.ALICEBLUE));
+        region3.addHook(Hook.Direction.horizontal, 100, 0, true);
 
-        visualSourcePlaceHolder.getChildren().addAll(region1, region2, region3);
+        visualSourcePane.getChildren().addAll(region1, region2, region3);
 
     }
 

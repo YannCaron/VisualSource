@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.core;
 
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
@@ -18,7 +18,7 @@ public abstract class DraggableRegion extends LinkableRegion {
     private double currentDeltaY = 0;
 
     // constructor
-    public DraggableRegion(VisualSourcePlaceHolder placeHolder) {
+    public DraggableRegion(AbstractVisualSource placeHolder) {
         super(placeHolder);
 
         // event management

@@ -43,7 +43,7 @@
         </Accordion>
         <BorderPane prefHeight="200.0" prefWidth="200.0">
             <center>
-                <VisualSourcePlaceHolder fx:id="visualSourcePlaceHolder" />
+                <VisualSourcePane fx:id="visualSourcePane" />
             </center>
         </BorderPane>
     </items>

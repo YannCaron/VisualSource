@@ -11,7 +11,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-import net.algoid.visualsource.VisualSourcePlaceHolder;
+import net.algoid.visualsource.core.AbstractVisualSource;
 
 /**
  *
@@ -21,7 +21,7 @@ public class Action extends InstructionNode implements Constants {
 
     private final String name;
 
-    public Action(VisualSourcePlaceHolder placeHolder, String name, double x, double y) {
+    public Action(AbstractVisualSource placeHolder, String name, double x, double y) {
         super(placeHolder);
         this.name = name;
 

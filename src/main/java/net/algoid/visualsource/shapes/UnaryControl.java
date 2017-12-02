@@ -15,7 +15,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
-import net.algoid.visualsource.VisualSourcePlaceHolder;
+import net.algoid.visualsource.core.AbstractVisualSource;
 import static net.algoid.visualsource.shapes.Constants.BORDER;
 import static net.algoid.visualsource.shapes.Constants.HEIGHT;
 
@@ -31,7 +31,7 @@ public class UnaryControl extends InstructionNode implements Constants {
     private final SnapRegion instructionSnap;
     private final SVGPath shape;
 
-    public UnaryControl(VisualSourcePlaceHolder placeHolder, String name, double x, double y) {
+    public UnaryControl(AbstractVisualSource placeHolder, String name, double x, double y) {
         super(placeHolder);
         this.name = name;
 
