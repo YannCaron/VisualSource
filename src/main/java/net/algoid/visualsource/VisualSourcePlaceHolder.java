@@ -14,20 +14,32 @@ import net.algoid.visualsource.shapes.SnapRegion;
  *
  * @author cyann
  */
-public class VisualSourcePlaceHolder extends Pane {
+public class VisualSourcePlaceHolder extends Pane implements HookQueryable {
+
+    private boolean anyHookHandeled;
 
     public VisualSourcePlaceHolder() {
         this.setPickOnBounds(true);
         initialize();
+        anyHookHandeled = true;
     }
 
     public VisualSourcePlaceHolder(Node... children) {
         super(children);
         initialize();
     }
-    
+
     private final void initialize() {
         getStylesheets().add(getClass().getResource("/styles/visual-source.css").toExternalForm());
+    }
+
+    // property
+    public boolean hasAnyHookHandeled() {
+        return anyHookHandeled;
+    }
+
+    void activateHookHandeling() {
+        anyHookHandeled = true;
     }
 
     // depth first search
@@ -35,6 +47,20 @@ public class VisualSourcePlaceHolder extends Pane {
         for (Node child : getChildren()) {
             if (child != query && child instanceof InstructionNode) {
                 SnapRegion found = ((InstructionNode) child).queryRegionIntersection(query);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Hook queryHookIntersection(HangableRegion query) {
+        for (Node child : getChildren()) {
+            if (child != query && child instanceof HangableRegion) {
+                Hook found = ((HangableRegion) child).queryHookIntersection(query);
                 if (found != null) {
                     return found;
                 }
