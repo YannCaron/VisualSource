@@ -12,6 +12,6 @@ package net.algoid.visualsource.core;
 public interface HookQueryable {
 
     // Depth first search
-    Hook queryHookIntersection(HangableRegion query);
+    Hook queryHookIntersection(HoldableRegion query);
 
 }

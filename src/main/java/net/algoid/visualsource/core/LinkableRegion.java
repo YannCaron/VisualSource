@@ -18,8 +18,6 @@ import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -60,28 +58,23 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
         chainableHook = new HashMap<>();
         hooks = new ArrayList<>();
 
-        visibleProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                System.out.println("Visibility changed !");
-            }
-        });
-        
         //getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
         graphic = new Pane();
         getChildren().add(graphic);
-        
-        Platform.runLater(this::applyGraphic);
+
+        Platform.runLater(this::invalidate);
+        Platform.runLater(this::initializeLayout);
     }
-    
+
     // private
-    private void applyGraphic() {
+    public void invalidate() {
         graphic.getChildren().clear();
         graphic.getChildren().add(getGraphic());
     }
-    
+
     // abstract
     protected abstract Node getGraphic();
+    protected abstract void initializeLayout();
 
     // property
     // chain of responsibility
@@ -98,22 +91,26 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
 
     public final Hook addHook(Hook.Direction direction, double x, double y, boolean chainable) {
         Hook hook = new Hook(this, direction);
+        addHook(hook, x, y, chainable);
+        return hook;
+    }
+
+    public final void addHook(Hook hook, double x, double y, boolean chainable) {
+        hook.setParent(this);
         getChildren().add(hook);
         hooks.add(hook);
-        hook.setLayoutX(x);
-        hook.setLayoutY(y);
+        hook.relocate(x, y);
 
         if (chainable) {
             chainableHook.put(hook.getDirection(), hook);
         }
-        
+
         hook.toBack();
-        return hook;
     }
 
     // method
     @Override
-    public Hook queryHookIntersection(HangableRegion query) {
+    public Hook queryHookIntersection(HoldableRegion query) {
         // Depth first search
         for (Node child : getChildren()) {
             if (child instanceof Hook) {

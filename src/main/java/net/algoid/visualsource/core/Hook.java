@@ -23,8 +23,8 @@ public class Hook extends Region implements HookQueryable {
 
         public static final EventType<HookEvent> OVER = new EventType<>("LINKABLE_OVER_HOOK");
         public static final EventType<HookEvent> OUT = new EventType<>("LINKABLE_OUT_HOOK");
-        public static final EventType<HookEvent> PUT_IN = new EventType<>("LINKABLE_PUT_IN");
-        public static final EventType<HookEvent> PUT_OUT = new EventType<>("LINKABLE_PUT_OUT");
+        public static final EventType<HookEvent> HANG = new EventType<>("LINKABLE_HANG");
+        public static final EventType<HookEvent> RELEASE = new EventType<>("LINKABLE_RELEASE");
 
         private final Hook hook;
         private final LinkableRegion region;
@@ -51,7 +51,7 @@ public class Hook extends Region implements HookQueryable {
 
     // attribute
     private final Hook.Direction direction;
-    private final LinkableRegion parent;
+    private LinkableRegion parent;
     private final Bounds hookBoundsInLocal;
 
     // constructor
@@ -62,6 +62,10 @@ public class Hook extends Region implements HookQueryable {
     }
 
     // accessor
+    public void setParent(LinkableRegion parent) {
+        this.parent = parent;
+    }
+
     public LinkableRegion getParentLink() {
         return parent;
     }
@@ -77,7 +81,7 @@ public class Hook extends Region implements HookQueryable {
     public void setChild(LinkableRegion child) {
         getChildren().clear();
         getChildren().add(child);
-        fireEvent(new HookEvent(this, child, HookEvent.PUT_IN));
+        fireEvent(new HookEvent(this, child, HookEvent.HANG));
     }
 
     public LinkableRegion getChild() {
@@ -90,13 +94,13 @@ public class Hook extends Region implements HookQueryable {
 
     // method
     public void removeChild() {
-        fireEvent(new HookEvent(this, getChild(), HookEvent.PUT_OUT));
+        fireEvent(new HookEvent(this, getChild(), HookEvent.RELEASE));
         getChildren().clear();
     }
 
     // depth first search
     @Override
-    public Hook queryHookIntersection(HangableRegion query) {
+    public Hook queryHookIntersection(HoldableRegion query) {
         if (hasChild()) {
 
             // chain of responcibility
@@ -114,14 +118,21 @@ public class Hook extends Region implements HookQueryable {
     }
 
     // event
-    public void setOnOverEvent(EventHandler<HookEvent> handler) {
+    public final void setOnOverEvent(EventHandler<HookEvent> handler) {
         getParentLink().getPlaceHolder().activateHookHandeling();
         addEventHandler(HookEvent.OVER, handler);
     }
 
-    public void setOnOutEvent(EventHandler<HookEvent> handler) {
+    public final void setOnOutEvent(EventHandler<HookEvent> handler) {
         getParentLink().getPlaceHolder().activateHookHandeling();
         addEventHandler(HookEvent.OUT, handler);
     }
 
+    public final void setOnHangEvent(EventHandler<HookEvent> handler) {
+        addEventHandler(HookEvent.HANG, handler);
+    }
+
+    public final void setOnReleaseEvent(EventHandler<HookEvent> handler) {
+        addEventHandler(HookEvent.RELEASE, handler);
+    }
 }

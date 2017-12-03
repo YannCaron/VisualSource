@@ -13,22 +13,22 @@ import static net.algoid.visualsource.core.Hook.HookEvent.OUT;
  *
  * @author cyann
  */
-public abstract class HangableRegion extends DraggableRegion {
+public abstract class HoldableRegion extends DraggableRegion {
 
     // attribute
-    private final Bounds hangBoundsInLocal;
+    private final Bounds holdBoundsInLocal;
     private Hook previousHook = null;
 
     // constructor
-    public HangableRegion(AbstractVisualSource placeHolder, Bounds hangBounds) {
+    public HoldableRegion(AbstractVisualSource placeHolder, Bounds holdBounds) {
         super(placeHolder);
-        this.hangBoundsInLocal = hangBounds;
+        this.holdBoundsInLocal = holdBounds;
 
     }
 
     // property
     public boolean isIntersectHook(Hook hook) {
-        Bounds queryInScene = this.localToScene(this.hangBoundsInLocal);
+        Bounds queryInScene = this.localToScene(this.holdBoundsInLocal);
         Bounds thisInScene = hook.localToScene(hook.getHookBoundsInLocal());
         return thisInScene.intersects(queryInScene);
     }
@@ -63,8 +63,7 @@ public abstract class HangableRegion extends DraggableRegion {
         Hook hook = placeHolder.queryHookIntersection(this);
 
         if (hook != null) {
-            setLayoutX(0);
-            setLayoutY(0);
+            relocate(0, 0);
 
             if (hook.hasChild()) {
                 shiftChild(hook);

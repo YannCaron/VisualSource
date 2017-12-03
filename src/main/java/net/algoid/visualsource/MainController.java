@@ -8,7 +8,7 @@ package net.algoid.visualsource;
 import net.algoid.visualsource.core.AbstractVisualSource;
 import net.algoid.visualsource.core.LinkableRegion;
 import net.algoid.visualsource.core.Hook;
-import net.algoid.visualsource.core.HangableRegion;
+import net.algoid.visualsource.core.HoldableRegion;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -16,7 +16,9 @@ import javafx.fxml.Initializable;
 import javafx.geometry.BoundingBox;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import net.algoid.visualsource.core.AssociatedHook;
 import net.algoid.visualsource.shapes.Action;
 import net.algoid.visualsource.shapes.UnaryControl;
 
@@ -49,20 +51,40 @@ public class MainController implements Initializable {
 
         visualSourcePane.getChildren().addAll(control1, control2);
 
-        HangableRegion region1 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
+        HoldableRegion region1 = new HoldableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
             @Override
             protected Node getGraphic() {
                 return new Rectangle(100, 100, Color.BLUEVIOLET);
             }
+
+            @Override
+            protected void initializeLayout() {
+                Node hookTip = new Circle(5, Color.WHITE);
+                getChildren().add(hookTip);
+
+                Hook hook = new AssociatedHook(this, hookTip, Hook.Direction.horizontal) {
+                    @Override
+                    protected void applyOverEffect(Node tip) {
+                        tip.setVisible(true);
+                    }
+
+                    @Override
+                    protected void applyOutEffect(Node tip) {
+                        tip.setVisible(false);
+                    }
+                };
+
+                addHook(hook, 100, 0, true);
+                hook.setOnOverEvent((Hook.HookEvent event) -> {
+                    System.out.println("Over1 " + event);
+                });
+                hook.setOnOutEvent((Hook.HookEvent event) -> {
+                    System.out.println("Out1 " + event);
+                });
+
+            }
         };
 //        region1.getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
-        Hook hook = region1.addHook(Hook.Direction.horizontal, 100, 0, true);
-        hook.setOnOverEvent((Hook.HookEvent event) -> {
-            System.out.println("Over " + event);
-        });
-        hook.setOnOutEvent((Hook.HookEvent event) -> {
-            System.out.println("Out " + event);
-        });
         region1.setOnOverEvent((LinkableRegion.LinkableRegionEvent event) -> {
             event.getLinkableRegion().setOpacity(0.75);
         });
@@ -70,30 +92,35 @@ public class MainController implements Initializable {
             event.getLinkableRegion().setOpacity(1);
         });
 
-        region1.setOnDragStartedEvent((LinkableRegion.LinkableRegionEvent event) -> {
-            System.out.println("Drag started " + event);
-        });
-        region1.setOnDragStoppedEvent((LinkableRegion.LinkableRegionEvent event) -> {
-            System.out.println("Drag stopped " + event);
-        });
-
-        HangableRegion region2 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
+        HoldableRegion region2 = new HoldableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
             @Override
             protected Node getGraphic() {
                 return new Rectangle(100, 100, Color.BEIGE);
             }
-        };
-        //region2.getChildren().add(new Rectangle(75, 75, Color.GRAY));
-        region2.addHook(Hook.Direction.horizontal, 100, 0, true);
 
-        HangableRegion region3 = new HangableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
+            @Override
+            protected void initializeLayout() {
+                Hook hook = addHook(Hook.Direction.horizontal, 100, 0, true);
+                hook.setOnOverEvent((Hook.HookEvent event) -> {
+                    System.out.println("Over2 " + event);
+                });
+                hook.setOnOutEvent((Hook.HookEvent event) -> {
+                    System.out.println("Out2 " + event);
+                });
+            }
+        };
+
+        HoldableRegion region3 = new HoldableRegion(visualSourcePane, new BoundingBox(0, 0, 50, 50)) {
             @Override
             protected Node getGraphic() {
                 return new Rectangle(100, 100, Color.BLANCHEDALMOND);
             }
+
+            @Override
+            protected void initializeLayout() {
+                addHook(Hook.Direction.horizontal, 100, 0, true);
+            }
         };
-        //region3.getChildren().add(new Rectangle(50, 50, Color.ALICEBLUE));
-        region3.addHook(Hook.Direction.horizontal, 100, 0, true);
 
         visualSourcePane.getChildren().addAll(region1, region2, region3);
 

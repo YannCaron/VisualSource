@@ -53,10 +53,10 @@ public abstract class AbstractVisualSource extends Pane implements HookQueryable
     }
 
     @Override
-    public Hook queryHookIntersection(HangableRegion query) {
+    public Hook queryHookIntersection(HoldableRegion query) {
         for (Node child : getChildren()) {
-            if (child != query && child instanceof HangableRegion) {
-                Hook found = ((HangableRegion) child).queryHookIntersection(query);
+            if (child != query && child instanceof HoldableRegion) {
+                Hook found = ((HoldableRegion) child).queryHookIntersection(query);
                 if (found != null) {
                     return found;
                 }
