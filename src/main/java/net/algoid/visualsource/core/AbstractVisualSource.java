@@ -8,8 +8,6 @@ package net.algoid.visualsource.core;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import net.algoid.visualsource.shapes.InstructionNode;
-import net.algoid.visualsource.shapes.SnapRegion;
 
 /**
  *
@@ -22,7 +20,7 @@ public abstract class AbstractVisualSource extends Pane implements HookQueryable
     public AbstractVisualSource() {
         this.setPickOnBounds(true);
         anyHookHandeled = true;
-        
+
         Platform.runLater(this::initialize);
     }
 
@@ -39,19 +37,6 @@ public abstract class AbstractVisualSource extends Pane implements HookQueryable
     }
 
     // depth first search
-    public SnapRegion queryRegionIntersection(InstructionNode query) {
-        for (Node child : getChildren()) {
-            if (child != query && child instanceof InstructionNode) {
-                SnapRegion found = ((InstructionNode) child).queryRegionIntersection(query);
-                if (found != null) {
-                    return found;
-                }
-            }
-        }
-
-        return null;
-    }
-
     @Override
     public Hook queryHookIntersection(HoldableRegion query) {
         for (Node child : getChildren()) {

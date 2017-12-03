@@ -5,8 +5,6 @@
  */
 package net.algoid.visualsource;
 
-import net.algoid.visualsource.shapes.*;
-
 /**
  *
  * @author cyann

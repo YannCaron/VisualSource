@@ -14,8 +14,6 @@ import javafx.scene.text.Text;
 import net.algoid.visualsource.core.AbstractVisualSource;
 import net.algoid.visualsource.core.Hook;
 import net.algoid.visualsource.core.Hook.HookEvent;
-import static net.algoid.visualsource.shapes.Constants.BORDER;
-import static net.algoid.visualsource.shapes.Constants.HEIGHT;
 
 /**
  *
@@ -52,9 +50,7 @@ public class UnaryControl extends AbstractInstructionNode {
         double height = getRawHeight();
         shape.setContent(String.format(SVG_FORMAT, width, HEIGHT, height, height - BORDER));
 
-        if (instructionHook != null) {
-            instructionHook.setLayoutY(height);
-        }
+        instructionHook.setLayoutY(height);
     }
 
     @Override
@@ -69,19 +65,20 @@ public class UnaryControl extends AbstractInstructionNode {
         shape.getStyleClass().add("in-control");
         shape.getStyleClass().add(String.format("in-control-%s", getName().replace(" ", "-")));
 
-        applyLayout();
-
         return new Group(shape, text);
     }
 
     @Override
     protected void initializeLayout() {
         instructionHook = createInstructionHook(true);
+
         contentHook = createInstructionHook(false);
         contentHook.relocate(15, HEIGHT);
 
         contentHook.setOnHangEvent(this::contentHook_onHangEvent);
         contentHook.setOnReleaseEvent(this::contentHook_onReleaseEvent);
+
+        applyLayout();
     }
 
     @Override

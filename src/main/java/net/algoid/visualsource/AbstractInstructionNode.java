@@ -20,7 +20,7 @@ import net.algoid.visualsource.core.Hook;
  *
  * @author cyann
  */
-public abstract class AbstractInstructionNode extends HoldableRegion {
+public abstract class AbstractInstructionNode extends HoldableRegion implements Constants {
 
     // constant
     public static final Bounds HOLD_BOUND = new BoundingBox(0, 0, 75, 15);

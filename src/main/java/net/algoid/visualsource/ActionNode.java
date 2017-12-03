@@ -17,7 +17,7 @@ import net.algoid.visualsource.core.Hook;
  *
  * @author cyann
  */
-public class ActionNode extends AbstractInstructionNode implements Constants{
+public class ActionNode extends AbstractInstructionNode {
     
     public static final String SVG_FORMAT
             = "m 0,0 0,%2$f 15,0 "
