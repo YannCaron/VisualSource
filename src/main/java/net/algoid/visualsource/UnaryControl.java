@@ -49,10 +49,12 @@ public class UnaryControl extends AbstractInstructionNode {
 
     private void applyLayout() {
         double width = text.getLayoutBounds().getWidth() + BORDER * 4;
-        double height = computeRawHeight();
+        double height = getRawHeight();
         shape.setContent(String.format(SVG_FORMAT, width, HEIGHT, height, height - BORDER));
 
-        instructionHook.setLayoutY(height);
+        if (instructionHook != null) {
+            instructionHook.setLayoutY(height);
+        }
     }
 
     @Override
@@ -67,6 +69,8 @@ public class UnaryControl extends AbstractInstructionNode {
         shape.getStyleClass().add("in-control");
         shape.getStyleClass().add(String.format("in-control-%s", getName().replace(" ", "-")));
 
+        applyLayout();
+
         return new Group(shape, text);
     }
 
@@ -76,16 +80,14 @@ public class UnaryControl extends AbstractInstructionNode {
         contentHook = createInstructionHook(false);
         contentHook.relocate(15, HEIGHT);
 
-        contentHook.setOnHangEvent(this::this_onHangEvent);
-        contentHook.setOnReleaseEvent(this::this_onReleaseEvent);
-
-        applyLayout();
+        contentHook.setOnHangEvent(this::contentHook_onHangEvent);
+        contentHook.setOnReleaseEvent(this::contentHook_onReleaseEvent);
     }
 
     @Override
     protected double getRawHeight() {
         double height = HEIGHT + BORDER;
-        if (contentHook.hasChild()) {
+        if (contentHook != null && contentHook.hasChild()) {
             height += contentHook.getChild().computeRawHeight();
         }
 
@@ -93,11 +95,11 @@ public class UnaryControl extends AbstractInstructionNode {
     }
 
     // event management
-    protected void this_onHangEvent(HookEvent event) {
+    protected void contentHook_onHangEvent(HookEvent event) {
         Platform.runLater(this::applyLayout);
     }
 
-    protected void this_onReleaseEvent(HookEvent event) {
+    protected void contentHook_onReleaseEvent(HookEvent event) {
         Platform.runLater(this::applyLayout);
     }
 
