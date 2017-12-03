@@ -61,6 +61,12 @@ public class Hook extends Region implements HookQueryable {
         this.hookBoundsInLocal = new BoundingBox(0, 0, 1, 1);
     }
 
+    public Hook(LinkableRegion parent, Direction direction, Bounds hookBoundsInLocal) {
+        this.direction = direction;
+        this.parent = parent;
+        this.hookBoundsInLocal = hookBoundsInLocal;
+    }
+
     // accessor
     public void setParent(LinkableRegion parent) {
         this.parent = parent;
@@ -85,7 +91,10 @@ public class Hook extends Region implements HookQueryable {
     }
 
     public LinkableRegion getChild() {
-        return (LinkableRegion) getChildren().get(0);
+        if (hasChild()) {
+            return (LinkableRegion) getChildren().get(0);
+        }
+        return null;
     }
 
     public boolean hasChild() {

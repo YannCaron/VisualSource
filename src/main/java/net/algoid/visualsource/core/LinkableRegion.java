@@ -49,13 +49,13 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
     // attribut
     private final Pane graphic;
     protected final AbstractVisualSource placeHolder;
-    private final Map<Hook.Direction, Hook> chainableHook;
+    private final Map<Hook.Direction, Hook> linkableHook;
     private final List<Hook> hooks;
 
     // constructor
     public LinkableRegion(AbstractVisualSource placeHolder) {
         this.placeHolder = placeHolder;
-        chainableHook = new HashMap<>();
+        linkableHook = new HashMap<>();
         hooks = new ArrayList<>();
 
         //getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
@@ -74,9 +74,16 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
 
     // abstract
     protected abstract Node getGraphic();
+
     protected abstract void initializeLayout();
 
+    protected abstract double getRawHeight();
+
     // property
+    public AbstractVisualSource getPlaceHolder() {
+        return placeHolder;
+    }
+
     // chain of responsibility
     public LinkableRegion getHead() {
         if (getParent() instanceof Hook) {
@@ -84,31 +91,38 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
         }
         return this;
     }
-
-    public AbstractVisualSource getPlaceHolder() {
-        return placeHolder;
-    }
-
-    public final Hook addHook(Hook.Direction direction, double x, double y, boolean chainable) {
-        Hook hook = new Hook(this, direction);
-        addHook(hook, x, y, chainable);
-        return hook;
-    }
-
-    public final void addHook(Hook hook, double x, double y, boolean chainable) {
-        hook.setParent(this);
-        getChildren().add(hook);
-        hooks.add(hook);
-        hook.relocate(x, y);
-
-        if (chainable) {
-            chainableHook.put(hook.getDirection(), hook);
+    
+    // chain of responsibility
+    public double computeRawHeight() {
+        double height = getRawHeight();
+        
+        Hook linkHook = linkableHook.get(Hook.Direction.vertical);
+        if (linkHook != null && linkHook.hasChild()) {
+            height += linkHook.getChild().computeRawHeight();
         }
-
-        hook.toBack();
+        
+        return height;
     }
 
     // method
+    public final Hook addHook(Hook.Direction direction, boolean chainable) {
+        Hook hook = new Hook(this, direction);
+        addHook(hook, chainable);
+        return hook;
+    }
+
+    public final void addHook(Hook hook, boolean linkable) {
+        hook.setParent(this);
+        getChildren().add(hook);
+        hooks.add(hook);
+
+        if (linkable) {
+            linkableHook.put(hook.getDirection(), hook);
+        }
+
+        hook.toFront();
+    }
+
     @Override
     public Hook queryHookIntersection(HoldableRegion query) {
         // Depth first search
@@ -126,7 +140,7 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
 
     public Hook findChainableHook(Hook.Direction direction) {
         // hash tree depth first search
-        Hook hook = chainableHook.get(direction);
+        Hook hook = linkableHook.get(direction);
 
         if (hook != null && hook.hasChild()) {
             return hook.getChild().findChainableHook(direction);

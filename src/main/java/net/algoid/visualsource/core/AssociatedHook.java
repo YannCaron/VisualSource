@@ -21,7 +21,7 @@ public abstract class AssociatedHook extends Hook {
 
     // constructor
     public AssociatedHook(LinkableRegion parent, Node tip, Direction direction) {
-        super(parent, direction);
+        super(parent, direction, tip.getBoundsInLocal());
         this.tip = tip;
         offsetX = getLayoutX() - tip.getLayoutX();
         offsetY = getLayoutY() - tip.getLayoutY();

@@ -52,7 +52,7 @@ public abstract class DraggableRegion extends LinkableRegion {
             return borderTop;
         }
         if (y + getHeight() >= phHeight + borderBottom) {
-            return phHeight - borderBottom - getWidth();
+            return phHeight - borderBottom - getHeight();
         }
 
         return y;
