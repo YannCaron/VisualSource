@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import net.algoid.visualsource.core.AbstractVisualSource;
+import net.algoid.visualsource.core.AcceptationType;
 import net.algoid.visualsource.core.Hook;
 import net.algoid.visualsource.core.Hook.HookEvent;
 
@@ -19,7 +20,7 @@ import net.algoid.visualsource.core.Hook.HookEvent;
  *
  * @author cyann
  */
-public class UnaryControl extends AbstractInstructionNode {
+public class UnaryControl extends AbstractNonTerminalNode {
 
     public static final String SVG_FORMAT
             = "m 0,0 0,%3$f 15,0 "
@@ -40,15 +41,20 @@ public class UnaryControl extends AbstractInstructionNode {
     private Hook instructionHook, contentHook;
 
     public UnaryControl(AbstractVisualSource placeHolder, String name) {
-        super(placeHolder, name);
+        super(placeHolder, name, INSTRUCTION_BOUNDS);
         shape = new SVGPath();
         text = new Text(name);
     }
 
+    @Override
+    protected AcceptationType getAcceptationType() {
+        return AbstractNonTerminalNode.INSTRUCTION;
+    }
+
     private void applyLayout() {
-        double width = text.getLayoutBounds().getWidth() + BORDER * 4;
+        double width = getRawWidth();
         double height = getRawHeight();
-        shape.setContent(String.format(SVG_FORMAT, width, HEIGHT, height, height - BORDER));
+        shape.setContent(String.format(SVG_FORMAT, width, UNIT, height, height - BORDER));
 
         instructionHook.setLayoutY(height);
     }
@@ -58,7 +64,7 @@ public class UnaryControl extends AbstractInstructionNode {
         text.getStyleClass().add("in-text");
         text.setX(BORDER * 2);
         text.setTextOrigin(VPos.CENTER);
-        text.setY(HEIGHT / 2 - 1);
+        text.setY(UNIT / 2 - 1);
         text.applyCss();
 
         shape.getStyleClass().add("in");
@@ -73,7 +79,7 @@ public class UnaryControl extends AbstractInstructionNode {
         instructionHook = createInstructionHook(true);
 
         contentHook = createInstructionHook(false);
-        contentHook.relocate(15, HEIGHT);
+        contentHook.relocate(15, UNIT);
 
         contentHook.setOnHangEvent(this::contentHook_onHangEvent);
         contentHook.setOnReleaseEvent(this::contentHook_onReleaseEvent);
@@ -82,13 +88,16 @@ public class UnaryControl extends AbstractInstructionNode {
     }
 
     @Override
-    protected double getRawHeight() {
-        double height = HEIGHT + BORDER;
-        if (contentHook != null && contentHook.hasChild()) {
-            height += contentHook.getChild().computeRawHeight();
-        }
+    public double getRawHeight() {
+        double height = UNIT + BORDER;
+        height += contentHook.getRawHeight();
 
         return height;
+    }
+
+    @Override
+    public double getRawWidth() {
+        return text.getLayoutBounds().getWidth() + BORDER * 4;
     }
 
     // event management

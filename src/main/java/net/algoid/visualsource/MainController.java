@@ -49,9 +49,21 @@ public class MainController implements Initializable {
         controlNode4.relocate(310, 110);
         LinkableRegion controlNode5 = new UnaryControl(visualSourcePane, "always");
         controlNode5.relocate(410, 110);
+
+        LinkableRegion operatorNode1 = new BinaryOperator(visualSourcePane, "plus", "+");
+        operatorNode1.relocate(10, 210);
+        LinkableRegion operatorNode2 = new BinaryOperator(visualSourcePane, "minus", "-");
+        operatorNode2.relocate(110, 210);
+        LinkableRegion operatorNode3 = new BinaryOperator(visualSourcePane, "multiplication", "x");
+        operatorNode3.relocate(210, 210);
+        LinkableRegion operatorNode4 = new BinaryOperator(visualSourcePane, "division", "÷");
+        operatorNode4.relocate(310, 210);
+        LinkableRegion operatorNode5 = new BinaryOperator(visualSourcePane, "modulo", "mod");
+        operatorNode5.relocate(410, 210);
         
         visualSourcePane.getChildren().addAll(actionNode1, actionNode2, actionNode3, actionNode4, actionNode5);
         visualSourcePane.getChildren().addAll(controlNode1, controlNode2, controlNode3, controlNode4, controlNode5);
+        visualSourcePane.getChildren().addAll(operatorNode1, operatorNode2, operatorNode3, operatorNode4, operatorNode5);
 
     }
 

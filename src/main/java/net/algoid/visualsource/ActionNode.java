@@ -11,13 +11,14 @@ import javafx.scene.Node;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import net.algoid.visualsource.core.AbstractVisualSource;
+import net.algoid.visualsource.core.AcceptationType;
 import net.algoid.visualsource.core.Hook;
 
 /**
  *
  * @author cyann
  */
-public class ActionNode extends AbstractInstructionNode {
+public class ActionNode extends AbstractNonTerminalNode {
     
     public static final String SVG_FORMAT
             = "m 0,0 0,%2$f 15,0 "
@@ -26,21 +27,27 @@ public class ActionNode extends AbstractInstructionNode {
             + "A 7.5,7.5 0 0 1 22.5,5 7.5,7.5 0 0 1 15,0 "
             + "L 0,0 Z";
 
+    private final Text text;
+    
     public ActionNode(AbstractVisualSource placeHolder, String name) {
-        super(placeHolder, name);
+        super(placeHolder, name, INSTRUCTION_BOUNDS);
+        text = new Text(getName());
     }
 
     @Override
+    protected AcceptationType getAcceptationType() {
+        return AbstractNonTerminalNode.INSTRUCTION;
+    }
+    
+    @Override
     protected Node getGraphic() {
-        Text text = new Text(getName());
         text.getStyleClass().add("in-text");
         text.setX(BORDER);
         text.setTextOrigin(VPos.CENTER);
-        text.setY(HEIGHT / 2 - 1);
-        final double width = text.getLayoutBounds().getWidth() + BORDER * 3;
+        text.setY(UNIT / 2 - 1);
 
         SVGPath shape = new SVGPath();
-        shape.setContent(String.format(SVG_FORMAT, width, HEIGHT));
+        shape.setContent(String.format(SVG_FORMAT, getRawWidth(), UNIT));
         shape.getStyleClass().add("in");
         shape.getStyleClass().add("in-action");
         shape.getStyleClass().add(String.format("in-action-%s", getName().replace(" ", "-")));
@@ -51,13 +58,19 @@ public class ActionNode extends AbstractInstructionNode {
     @Override
     protected void initializeLayout() {
         Hook instructionHook = createInstructionHook(true);
-        instructionHook.setLayoutY(HEIGHT);
+        instructionHook.setLayoutY(UNIT);
         
     }
 
     @Override
-    protected double getRawHeight() {
-        return HEIGHT;
+    public double getRawHeight() {
+        return UNIT;
     }
+
+    @Override
+    public double getRawWidth() {
+        return text.getLayoutBounds().getWidth() + BORDER * 3;
+    }
+
     
 }

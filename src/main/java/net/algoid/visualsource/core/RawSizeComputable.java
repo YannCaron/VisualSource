@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.core;
 
 /**
  *
  * @author cyann
  */
-public interface Constants {
+public interface RawSizeComputable {
 
-    public static final double UNIT = 35;
-    public static final double BORDER = 15;
+    double getRawHeight();
 
+    double getRawWidth();
+    
 }

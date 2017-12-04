@@ -12,6 +12,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.shape.Circle;
 import net.algoid.visualsource.core.AbstractVisualSource;
+import net.algoid.visualsource.core.AcceptationType;
 import net.algoid.visualsource.core.AssociatedHook;
 import net.algoid.visualsource.core.HoldableRegion;
 import net.algoid.visualsource.core.Hook;
@@ -20,20 +21,26 @@ import net.algoid.visualsource.core.Hook;
  *
  * @author cyann
  */
-public abstract class AbstractInstructionNode extends HoldableRegion implements Constants {
+public abstract class AbstractNonTerminalNode extends HoldableRegion implements Constants {
 
     // constant
-    public static final Bounds HOLD_BOUND = new BoundingBox(0, 0, 75, 15);
+    public static final AcceptationType INSTRUCTION = AcceptationType.getInstance("INSTRUCTION");
+    public static final AcceptationType EXPRESSION = AcceptationType.getInstance("EXPRESSION");
+
+    public static final Bounds INSTRUCTION_BOUNDS = new BoundingBox(0, 0, UNIT * 3, UNIT * 0.3);
+    public static final Bounds EXPRESSION_BOUNDS = new BoundingBox(0, 0, UNIT * 2, UNIT);
+
     public static final Effect DRAG_EFFECT = new GaussianBlur(5);
-    public static final double OVER_OPACITY = 0.75;
+    public static final double OVER_OPACITY = 0.5;
 
     // attribute
     private final String name;
 
     // constructor
-    public AbstractInstructionNode(AbstractVisualSource placeHolder, String name) {
-        super(placeHolder, HOLD_BOUND);
+    public AbstractNonTerminalNode(AbstractVisualSource placeHolder, String name, Bounds bounds) {
+        super(placeHolder, bounds);
         this.name = name;
+        this.setTypeOf(getAcceptationType());
 
         this.setOnOverEvent(this::this_onOver);
         this.setOnOutEvent(this::this_onOut);
@@ -46,26 +53,55 @@ public abstract class AbstractInstructionNode extends HoldableRegion implements 
         return name;
     }
 
+    // abstract
+    protected abstract AcceptationType getAcceptationType();
+
     // method
     public Hook createInstructionHook(boolean linkable) {
-        Circle shape = new Circle(22, -2, 2);
+        Circle shape = new Circle(22, -2, 4);
         getChildren().add(shape);
-        shape.toFront();
-        shape.getStyleClass().add("snap-tip");
+        shape.getStyleClass().add("hook-tip");
 
         Hook hook = new AssociatedHook(this, shape, Hook.Direction.vertical) {
             @Override
             protected void applyOverEffect(Node tip) {
                 tip.setVisible(true);
             }
-            
+
             @Override
             protected void applyOutEffect(Node tip) {
                 tip.setVisible(false);
             }
         };
-        
+
+        hook.setAcceptType(INSTRUCTION);
+
         addHook(hook, linkable);
+        shape.toFront();
+        return hook;
+    }
+
+    public Hook createExpressionHook(double x, double unit) {
+        Circle shape = new Circle(unit, unit, 4);
+        getChildren().add(shape);
+        shape.getStyleClass().add("hook-tip");
+
+        Hook hook = new AssociatedHook(this, shape, Hook.Direction.horizontal) {
+            @Override
+            protected void applyOverEffect(Node tip) {
+                tip.setVisible(true);
+            }
+
+            @Override
+            protected void applyOutEffect(Node tip) {
+                tip.setVisible(false);
+            }
+        };
+        hook.setAcceptType(EXPRESSION);
+
+        addHook(hook, false);
+        hook.relocate(x, 0);
+        shape.toFront();
         return hook;
     }
 

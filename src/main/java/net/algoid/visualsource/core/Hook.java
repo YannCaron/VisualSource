@@ -16,7 +16,7 @@ import javafx.scene.layout.Region;
  *
  * @author cyann
  */
-public class Hook extends Region implements HookQueryable {
+public class Hook extends Region implements HookQueryable, RawSizeComputable {
 
     // inner
     public static class HookEvent extends Event {
@@ -53,18 +53,21 @@ public class Hook extends Region implements HookQueryable {
     private final Hook.Direction direction;
     private LinkableRegion parent;
     private final Bounds hookBoundsInLocal;
+    private AcceptationType acceptType;
 
     // constructor
     public Hook(LinkableRegion parent, Direction direction) {
         this.direction = direction;
         this.parent = parent;
         this.hookBoundsInLocal = new BoundingBox(0, 0, 1, 1);
+        acceptType = AcceptationType.ALL;
     }
 
     public Hook(LinkableRegion parent, Direction direction, Bounds hookBoundsInLocal) {
         this.direction = direction;
         this.parent = parent;
         this.hookBoundsInLocal = hookBoundsInLocal;
+        acceptType = AcceptationType.ALL;
     }
 
     // accessor
@@ -78,6 +81,14 @@ public class Hook extends Region implements HookQueryable {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public AcceptationType getAcceptType() {
+        return acceptType;
+    }
+
+    public void setAcceptType(AcceptationType acceptType) {
+        this.acceptType = acceptType;
     }
 
     public Bounds getHookBoundsInLocal() {
@@ -101,10 +112,27 @@ public class Hook extends Region implements HookQueryable {
         return getChildren().size() == 1;
     }
 
+    @Override
+    public double getRawHeight() {
+        if (hasChild()) {
+            return getChild().computeRawHeight();
+        }
+        return 0;
+    }
+
+    @Override
+    public double getRawWidth() {
+        if (hasChild()) {
+            return getChild().computeRawWidth();
+        }
+        return 0;
+    }
+
     // method
     public void removeChild() {
-        fireEvent(new HookEvent(this, getChild(), HookEvent.RELEASE));
+        LinkableRegion released = getChild();
         getChildren().clear();
+        fireEvent(new HookEvent(this, released, HookEvent.RELEASE));
     }
 
     // depth first search
@@ -119,7 +147,7 @@ public class Hook extends Region implements HookQueryable {
             }
         }
 
-        if (query.isIntersectHook(this)) {
+        if (query.isIntersectHook(this) && getAcceptType().match(query.getTypeOf())) {
             return this;
         }
 

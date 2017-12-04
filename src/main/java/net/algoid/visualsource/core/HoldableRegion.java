@@ -91,7 +91,7 @@ public abstract class HoldableRegion extends DraggableRegion {
         Hook tailHook = findChainableHook(hook.getDirection());
         if (tailHook != null) {
             tailHook.setChild(existingChild);
-        } else {
+        } else if (existingChild instanceof DraggableRegion) {
             placeHolder.getChildren().add(existingChild);
             existingChild.setLayoutX(childBounds.getMinX() + childBounds.getWidth() / 2);
             existingChild.setLayoutY(childBounds.getMinY() + childBounds.getHeight() / 2);

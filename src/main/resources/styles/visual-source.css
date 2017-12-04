@@ -10,24 +10,42 @@ and open the template in the editor.
 
 .in-action{
     -fx-fill:#628fe2ff;
-    -fx-stroke:#4278dcff;
+    /*-fx-stroke:#4278dcff;*/
+    -fx-stroke:#c3d4f4ff;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );
 }
 
 .in-control{
     -fx-fill:#d5a404ff;
-    -fx-stroke:#af8703ff;
+    /*-fx-stroke:#af8703ff;*/
+    -fx-stroke:#feecb1ff;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );
+}
+
+.in-operator{
+    -fx-fill:#f9414aff;
+    -fx-stroke:#f9a6aaff;
+    /*-fx-stroke-width: 2;*/
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 5,0,0,0 );
 }
 
 .in-text{
-    -fx-font:16px "Sans-Serif";
+    -fx-font:20px "Sans-Serif";
     -fx-fill: rgba(255,255,255,1);
-    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );
-    /*-fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 10,0,0,0 );*/
+    /*-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );*/
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 10,0,0,0 );
 }
 
-.snap-tip{
+.expression-text{
+    -fx-font:16px "Sans-Serif";
+    -fx-fill: rgba(0,0,0,1);
+}
+
+.expression{
+    -fx-fill:#f9a6aaff;
+}
+
+.hook-tip{
     -fx-fill: rgba(255,255,255,0.25);
-    -fx-effect: dropshadow( gaussian , rgba(255,255,255,075) , 10,0.95,0,0 );
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 15,0.95,0,0 );
 }

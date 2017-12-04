@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -23,7 +21,7 @@ import javafx.scene.layout.Region;
  *
  * @author cyann
  */
-public abstract class LinkableRegion extends Region implements HookQueryable {
+public abstract class LinkableRegion extends Region implements HookQueryable, RawSizeComputable {
 
     // inner
     public static class LinkableRegionEvent extends Event {
@@ -51,14 +49,15 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
     protected final AbstractVisualSource placeHolder;
     private final Map<Hook.Direction, Hook> linkableHook;
     private final List<Hook> hooks;
+    private AcceptationType typeOf;
 
     // constructor
     public LinkableRegion(AbstractVisualSource placeHolder) {
         this.placeHolder = placeHolder;
         linkableHook = new HashMap<>();
         hooks = new ArrayList<>();
+        typeOf = AcceptationType.ALL;
 
-        //getChildren().add(new Rectangle(100, 100, Color.ANTIQUEWHITE));
         graphic = new Pane();
         getChildren().add(graphic);
 
@@ -72,12 +71,19 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
         graphic.getChildren().add(getGraphic());
     }
 
+    // property
+    public AcceptationType getTypeOf() {
+        return typeOf;
+    }
+
+    public void setTypeOf(AcceptationType ofType) {
+        this.typeOf = ofType;
+    }
+
     // abstract
     protected abstract Node getGraphic();
 
     protected abstract void initializeLayout();
-
-    protected abstract double getRawHeight();
 
     // property
     public AbstractVisualSource getPlaceHolder() {
@@ -91,17 +97,28 @@ public abstract class LinkableRegion extends Region implements HookQueryable {
         }
         return this;
     }
-    
+
     // chain of responsibility
     public double computeRawHeight() {
         double height = getRawHeight();
-        
+
         Hook linkHook = linkableHook.get(Hook.Direction.vertical);
         if (linkHook != null && linkHook.hasChild()) {
             height += linkHook.getChild().computeRawHeight();
         }
-        
+
         return height;
+    }
+
+    public double computeRawWidth() {
+        double width = getRawWidth();
+
+        Hook linkHook = linkableHook.get(Hook.Direction.horizontal);
+        if (linkHook != null && linkHook.hasChild()) {
+            width += linkHook.getChild().computeRawWidth();
+        }
+
+        return width;
     }
 
     // method
