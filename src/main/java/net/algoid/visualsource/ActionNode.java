@@ -28,6 +28,7 @@ public class ActionNode extends AbstractNonTerminalNode {
             + "L 0,0 Z";
 
     private final Text text;
+    private double textWidth = 0;
     
     public ActionNode(AbstractVisualSource placeHolder, String name) {
         super(placeHolder, name, INSTRUCTION_BOUNDS);
@@ -45,6 +46,8 @@ public class ActionNode extends AbstractNonTerminalNode {
         text.setX(BORDER);
         text.setTextOrigin(VPos.CENTER);
         text.setY(UNIT / 2 - 1);
+        text.applyCss();
+        textWidth = text.getLayoutBounds().getWidth();
 
         SVGPath shape = new SVGPath();
         shape.setContent(String.format(SVG_FORMAT, getRawWidth(), UNIT));
@@ -69,7 +72,7 @@ public class ActionNode extends AbstractNonTerminalNode {
 
     @Override
     public double getRawWidth() {
-        return text.getLayoutBounds().getWidth() + BORDER * 3;
+        return textWidth + BORDER * 4;
     }
 
     

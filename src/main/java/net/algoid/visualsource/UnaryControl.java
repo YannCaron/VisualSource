@@ -38,7 +38,9 @@ public class UnaryControl extends AbstractNonTerminalNode {
 
     private final SVGPath shape;
     private final Text text;
+    private Hook expressionHook;
     private Hook instructionHook, contentHook;
+    private double textWidth = 0;
 
     public UnaryControl(AbstractVisualSource placeHolder, String name) {
         super(placeHolder, name, INSTRUCTION_BOUNDS);
@@ -51,10 +53,16 @@ public class UnaryControl extends AbstractNonTerminalNode {
         return AbstractNonTerminalNode.INSTRUCTION;
     }
 
+    private AbstractTerminalNode createDummy() {
+        return new BooleanNode(placeHolder, true);
+    }
+
     private void applyLayout() {
         double width = getRawWidth();
         double height = getRawHeight();
         shape.setContent(String.format(SVG_FORMAT, width, UNIT, height, height - BORDER));
+
+        expressionHook.setLayoutX(textWidth + UNIT * 2);
 
         instructionHook.setLayoutY(height);
     }
@@ -66,6 +74,7 @@ public class UnaryControl extends AbstractNonTerminalNode {
         text.setTextOrigin(VPos.CENTER);
         text.setY(UNIT / 2 - 1);
         text.applyCss();
+        textWidth = text.getLayoutBounds().getWidth();
 
         shape.getStyleClass().add("in");
         shape.getStyleClass().add("in-control");
@@ -76,15 +85,21 @@ public class UnaryControl extends AbstractNonTerminalNode {
 
     @Override
     protected void initializeLayout() {
+        expressionHook = createExpressionHook(0, UNIT * 0.5);
+        expressionHook.setChild(createDummy());
+
         instructionHook = createInstructionHook(true);
 
         contentHook = createInstructionHook(false);
         contentHook.relocate(15, UNIT);
 
+        expressionHook.setOnHangEvent(this::expressionHook_onHangEvent);
+        expressionHook.setOnReleaseEvent(this::expressionHook_onReleaseEvent);
+
         contentHook.setOnHangEvent(this::contentHook_onHangEvent);
         contentHook.setOnReleaseEvent(this::contentHook_onReleaseEvent);
 
-        applyLayout();
+        Platform.runLater(this::applyLayout);
     }
 
     @Override
@@ -97,7 +112,9 @@ public class UnaryControl extends AbstractNonTerminalNode {
 
     @Override
     public double getRawWidth() {
-        return text.getLayoutBounds().getWidth() + BORDER * 4;
+        double width = textWidth + BORDER * 5.5;
+        width += expressionHook.getRawWidth();
+        return width;
     }
 
     // event management
@@ -106,6 +123,17 @@ public class UnaryControl extends AbstractNonTerminalNode {
     }
 
     protected void contentHook_onReleaseEvent(HookEvent event) {
+        Platform.runLater(this::applyLayout);
+    }
+
+    protected void expressionHook_onHangEvent(HookEvent event) {
+        Platform.runLater(this::applyLayout);
+    }
+
+    protected void expressionHook_onReleaseEvent(HookEvent event) {
+        if (!event.getHook().hasChild()) {
+            event.getHook().setChild(createDummy());
+        }
         Platform.runLater(this::applyLayout);
     }
 

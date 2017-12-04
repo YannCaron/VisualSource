@@ -25,6 +25,7 @@ public class BinaryOperator extends AbstractNonTerminalNode {
     private final Rectangle shape;
     private final Text text;
     private Hook leftHook, rightHook;
+    private double textWidth = 0;
 
     public BinaryOperator(AbstractVisualSource placeHolder, String name, String symbol) {
         super(placeHolder, name, EXPRESSION_BOUNDS);
@@ -40,14 +41,12 @@ public class BinaryOperator extends AbstractNonTerminalNode {
     }
 
     private void applyLayout() {
-        double textWidth = text.getLayoutBounds().getWidth();
         double width = getRawWidth();
         shape.setWidth(width);
 
         double leftWidth = leftHook.getRawWidth();
-        System.out.println(leftWidth);
-        text.setLayoutX(UNIT * 0.5 + leftWidth + UNIT * 0.25);
-        rightHook.setLayoutX(leftWidth + UNIT + textWidth);
+        text.setLayoutX(UNIT * 0.5 + leftWidth + UNIT * 0.375);
+        rightHook.setLayoutX(leftWidth + UNIT * 1.5 + textWidth);
 
     }
 
@@ -57,6 +56,7 @@ public class BinaryOperator extends AbstractNonTerminalNode {
         text.setTextOrigin(VPos.CENTER);
         text.setY(UNIT / 2 - 1);
         text.applyCss();
+        textWidth = text.getLayoutBounds().getWidth();
 
         shape.getStyleClass().add("in");
         shape.getStyleClass().add("in-operator");
@@ -65,8 +65,8 @@ public class BinaryOperator extends AbstractNonTerminalNode {
         return new Group(shape, text);
     }
 
-    private AbstractTerminalNode newDummy() {
-        return new NumberNode(placeHolder, 0);
+    private AbstractTerminalNode createDummy() {
+        return new BooleanNode(placeHolder, true);
     }
 
     @Override
@@ -74,8 +74,8 @@ public class BinaryOperator extends AbstractNonTerminalNode {
         leftHook = createExpressionHook(UNIT * 0.5, UNIT * 0.5);
         rightHook = createExpressionHook(UNIT * 2, UNIT * 0.5);
 
-        leftHook.setChild(newDummy());
-        rightHook.setChild(newDummy());
+        leftHook.setChild(createDummy());
+        rightHook.setChild(createDummy());
 
         leftHook.setOnHangEvent(this::leftHook_onHangEvent);
         leftHook.setOnReleaseEvent(this::leftHook_onReleaseEvent);
@@ -93,7 +93,7 @@ public class BinaryOperator extends AbstractNonTerminalNode {
 
     @Override
     public double getRawWidth() {
-        double width = UNIT * 1.5 + text.getLayoutBounds().getWidth();
+        double width = UNIT * 2 + textWidth;
         width += leftHook.getRawWidth();
         width += rightHook.getRawWidth();
 
@@ -106,8 +106,8 @@ public class BinaryOperator extends AbstractNonTerminalNode {
     }
 
     protected void leftHook_onReleaseEvent(HookEvent event) {
-        if (!leftHook.hasChild()) {
-            leftHook.setChild(newDummy());
+        if (!event.getHook().hasChild()) {
+            event.getHook().setChild(createDummy());
         }
         Platform.runLater(this::applyLayout);
     }
@@ -117,8 +117,8 @@ public class BinaryOperator extends AbstractNonTerminalNode {
     }
 
     protected void rightHook_onReleaseEvent(HookEvent event) {
-        if (!rightHook.hasChild()) {
-            rightHook.setChild(newDummy());
+        if (!event.getHook().hasChild()) {
+            event.getHook().setChild(createDummy());
         }
         Platform.runLater(this::applyLayout);
     }

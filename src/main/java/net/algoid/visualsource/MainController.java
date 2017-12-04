@@ -50,15 +50,15 @@ public class MainController implements Initializable {
         LinkableRegion controlNode5 = new UnaryControl(visualSourcePane, "always");
         controlNode5.relocate(410, 110);
 
-        LinkableRegion operatorNode1 = new BinaryOperator(visualSourcePane, "plus", "+");
+        LinkableRegion operatorNode1 = new BinaryOperator(visualSourcePane, "equal", "=");
         operatorNode1.relocate(10, 210);
-        LinkableRegion operatorNode2 = new BinaryOperator(visualSourcePane, "minus", "-");
+        LinkableRegion operatorNode2 = new BinaryOperator(visualSourcePane, "no equal", "≠");
         operatorNode2.relocate(110, 210);
-        LinkableRegion operatorNode3 = new BinaryOperator(visualSourcePane, "multiplication", "x");
+        LinkableRegion operatorNode3 = new BinaryOperator(visualSourcePane, "and", "and");
         operatorNode3.relocate(210, 210);
-        LinkableRegion operatorNode4 = new BinaryOperator(visualSourcePane, "division", "÷");
+        LinkableRegion operatorNode4 = new BinaryOperator(visualSourcePane, "or", "or");
         operatorNode4.relocate(310, 210);
-        LinkableRegion operatorNode5 = new BinaryOperator(visualSourcePane, "modulo", "mod");
+        LinkableRegion operatorNode5 = new BinaryOperator(visualSourcePane, "less than", "<");
         operatorNode5.relocate(410, 210);
         
         visualSourcePane.getChildren().addAll(actionNode1, actionNode2, actionNode3, actionNode4, actionNode5);
