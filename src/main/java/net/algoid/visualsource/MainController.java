@@ -5,12 +5,26 @@
  */
 package net.algoid.visualsource;
 
+import java.io.Serializable;
 import net.algoid.visualsource.core.AbstractVisualSource;
 import net.algoid.visualsource.core.LinkableRegion;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * FXML Controller class
@@ -20,6 +34,9 @@ import javafx.fxml.Initializable;
 public class MainController implements Initializable {
 
     @FXML
+    VBox container;
+
+    @FXML
     AbstractVisualSource visualSourcePane;
 
     /**
@@ -27,6 +44,76 @@ public class MainController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        Rectangle rect = new Rectangle(150, 50, Color.GOLDENROD);
+        rect.setOnDragDetected((MouseEvent event) -> {
+            System.out.println("Drag detected");
+            Dragboard db = rect.startDragAndDrop(TransferMode.ANY);
+
+            db.setDragView(rect.snapshot(null, null));
+            db.setDragViewOffsetX(event.getX());
+            db.setDragViewOffsetY(event.getY());
+
+            ClipboardContent content = new ClipboardContent();
+            content.putString("drag and drop test");
+            db.setContent(content);
+
+            event.consume();
+        });
+
+        visualSourcePane.setOnDragOver(new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                if (event.getGestureSource() != visualSourcePane
+                        && event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+
+                event.consume();
+            }
+        });
+
+        visualSourcePane.setOnDragEntered(new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                /* the drag-and-drop gesture entered the target */
+ /* show to the user that it is an actual gesture target */
+                if (event.getGestureSource() != visualSourcePane
+                        && event.getDragboard().hasString()) {
+                    visualSourcePane.setEffect(new GaussianBlur(5));
+                }
+
+                event.consume();
+            }
+        });
+
+        visualSourcePane.setOnDragExited(new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                /* mouse moved away, remove the graphical cues */
+                visualSourcePane.setEffect(null);
+
+                event.consume();
+            }
+        });
+
+        visualSourcePane.setOnDragDropped((DragEvent event) -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                //rect.setText(db.getString());
+                System.out.println(db.getString());
+                success = true;
+                Node r = (Node)event.getGestureSource();
+                container.getChildren().remove(r);
+                visualSourcePane.getChildren().remove(r);
+                Point2D coord = visualSourcePane.sceneToLocal(event.getSceneX() + db.getDragViewOffsetX(), event.getSceneY() + db.getDragViewOffsetY());
+                visualSourcePane.getChildren().add(r);
+                r.relocate(coord.getX(), coord.getY());
+            }
+            event.setDropCompleted(success);
+
+            event.consume();
+        });
+
+        container.getChildren().add(rect);
 
         LinkableRegion actionNode1 = new ActionNode(visualSourcePane, "jump");
         actionNode1.relocate(10, 10);
@@ -60,7 +147,7 @@ public class MainController implements Initializable {
         operatorNode4.relocate(310, 210);
         LinkableRegion operatorNode5 = new BinaryOperator(visualSourcePane, "less than", "<");
         operatorNode5.relocate(410, 210);
-        
+
         visualSourcePane.getChildren().addAll(actionNode1, actionNode2, actionNode3, actionNode4, actionNode5);
         visualSourcePane.getChildren().addAll(controlNode1, controlNode2, controlNode3, controlNode4, controlNode5);
         visualSourcePane.getChildren().addAll(operatorNode1, operatorNode2, operatorNode3, operatorNode4, operatorNode5);

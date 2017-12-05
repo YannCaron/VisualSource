@@ -24,9 +24,6 @@ import net.algoid.visualsource.core.Hook;
 public abstract class AbstractNonTerminalNode extends HoldableRegion implements Constants {
 
     // constant
-    public static final AcceptationType INSTRUCTION = new AcceptationType("INSTRUCTION");
-    public static final AcceptationType EXPRESSION = new AcceptationType("EXPRESSION");
-
     public static final Bounds INSTRUCTION_BOUNDS = new BoundingBox(0, 0, UNIT * 3, UNIT * 0.3);
     public static final Bounds EXPRESSION_BOUNDS = new BoundingBox(0, 0, UNIT * 2, UNIT);
 

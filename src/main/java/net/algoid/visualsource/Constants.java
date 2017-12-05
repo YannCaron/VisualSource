@@ -5,11 +5,17 @@
  */
 package net.algoid.visualsource;
 
+import net.algoid.visualsource.core.AcceptationType;
+
 /**
  *
  * @author cyann
  */
 public interface Constants {
+
+    // acceptation type enum
+    public static final AcceptationType INSTRUCTION = new AcceptationType("INSTRUCTION");
+    public static final AcceptationType EXPRESSION = new AcceptationType("EXPRESSION");
 
     public static final double UNIT = 35;
     public static final double BORDER = 15;

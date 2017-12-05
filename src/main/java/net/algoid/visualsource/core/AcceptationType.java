@@ -18,7 +18,7 @@ public class AcceptationType {
     // class attribute
     public static final AcceptationType ALL = new AcceptationType("ALL", (me, other) -> true);
 
-    private static Map<String, AcceptationType> enumSet;
+    private static Map<String, AcceptationType> flyweight;
     private static int nextOrdinal = 0;
 
     // attribute
@@ -28,24 +28,24 @@ public class AcceptationType {
 
     // constructor
     public AcceptationType(String name, BiPredicate<AcceptationType, AcceptationType> matcher) {
-        if (enumSet == null) {
-            enumSet = new HashMap<>();
+        if (flyweight == null) {
+            flyweight = new HashMap<>();
         }
 
         this.name = name;
         this.ordinal = nextOrdinal++;
         this.matcher = matcher;
 
-        if (enumSet.containsKey(name)) {
+        if (flyweight.containsKey(name)) {
             throw new RuntimeException(String.format("Acceptation type [%s] cannot be defined twice !", name));
         }
-        enumSet.put(name, this);
+        flyweight.put(name, this);
     }
 
     public AcceptationType(String name) {
         this(name, (me, other) -> me.ordinal == other.ordinal);
     }
-
+    
     // accessor
     public String getName() {
         return name;

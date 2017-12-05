@@ -10,13 +10,13 @@
 
 <SplitPane dividerPositions="0.2608695652173913" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.151" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.algoid.visualsource.MainController">
     <items>
-        <Accordion>
+        <Accordion expandedPane="$pane1">
             <panes>
-                <TitledPane animated="true" text="untitled 1">
+                <TitledPane fx:id="pane1" animated="true" text="untitled 1">
                     <content>
                         <ScrollPane prefHeight="200.0" prefWidth="200.0">
                             <content>
-                                <VBox prefHeight="228.0" prefWidth="200" />
+                                <VBox fx:id="container"  prefHeight="228.0" prefWidth="200" />
                             </content>
                         </ScrollPane>
                     </content>
