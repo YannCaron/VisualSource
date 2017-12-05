@@ -7,6 +7,7 @@ package net.algoid.visualsource.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiPredicate;
 
 /**
  *
@@ -14,47 +15,48 @@ import java.util.Map;
  */
 public class AcceptationType {
 
-    private static int counter = 0;
-    private static Map<String, AcceptationType> flyWeight = new HashMap<>();
+    // class attribute
+    public static final AcceptationType ALL = new AcceptationType("ALL", (me, other) -> true);
 
-    public static final AcceptationType ALL = AcceptationType.register(new AcceptationType("ALL") {
-        @Override
-        public boolean match(AcceptationType other) {
-            return true;
-        }
-    });
+    private static Map<String, AcceptationType> enumSet;
+    private static int nextOrdinal = 0;
 
-    private final int id;
+    // attribute
+    private final int ordinal;
     private final String name;
+    private final BiPredicate<AcceptationType, AcceptationType> matcher;
 
-    private AcceptationType(String name) {
+    // constructor
+    public AcceptationType(String name, BiPredicate<AcceptationType, AcceptationType> matcher) {
+        if (enumSet == null) {
+            enumSet = new HashMap<>();
+        }
+
         this.name = name;
-        this.id = counter++;
-    }
+        this.ordinal = nextOrdinal++;
+        this.matcher = matcher;
 
-    public static AcceptationType getInstance(String name) {
-        if (!flyWeight.containsKey(name)) {
-            flyWeight.put(name, new AcceptationType(name));
+        if (enumSet.containsKey(name)) {
+            throw new RuntimeException(String.format("Acceptation type [%s] cannot be defined twice !", name));
         }
-        return flyWeight.get(name);
+        enumSet.put(name, this);
     }
 
-    public static AcceptationType register(AcceptationType instance) {
-        if (flyWeight.containsKey(instance.getName())) {
-            throw new RuntimeException("Acceptation type cannot be defined twice !");
-        }
-        return flyWeight.put(instance.getName(), instance);
+    public AcceptationType(String name) {
+        this(name, (me, other) -> me.ordinal == other.ordinal);
     }
 
+    // accessor
     public String getName() {
         return name;
     }
 
+    // method
     public boolean match(AcceptationType other) {
         if (other == null) {
             return false;
         }
-        return id == other.id;
+        return matcher.test(this, other);
     }
 
 }
