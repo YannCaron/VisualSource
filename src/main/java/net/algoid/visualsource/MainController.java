@@ -5,26 +5,21 @@
  */
 package net.algoid.visualsource;
 
-import java.io.Serializable;
 import net.algoid.visualsource.core.AbstractVisualSource;
 import net.algoid.visualsource.core.LinkableRegion;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.effect.GaussianBlur;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import net.algoid.visualsource.corenew.DragManager;
+import net.algoid.visualsource.corenew.DropManager;
+import net.algoid.visualsource.corenew.HandleRegion;
+import net.algoid.visualsource.corenew.HoldType;
 
 /**
  * FXML Controller class
@@ -32,6 +27,30 @@ import javafx.scene.shape.Rectangle;
  * @author cyann
  */
 public class MainController implements Initializable {
+
+    private static class HandleRectangle extends HandleRegion {
+
+        public HandleRectangle() {
+            super(HoldType.ALL);
+        }
+
+        @Override
+        public HandleRegion createNew() {
+            HandleRectangle newInstance = new HandleRectangle();
+            net.algoid.visualsource.corenew.Hook hook = newInstance.createHook(HoldType.ALL);
+            hook.relocate(150, 0);
+            return newInstance;
+        }
+
+        @Override
+        public Node getGraphic() {
+            return new Rectangle(150, 70, Color.color(Math.random(), Math.random(), Math.random()));
+        }
+
+        @Override
+        public void applyLayout() {
+        }
+    }
 
     @FXML
     VBox container;
@@ -45,6 +64,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        /*
         Rectangle rect = new Rectangle(150, 50, Color.GOLDENROD);
         rect.setOnDragDetected((MouseEvent event) -> {
             System.out.println("Drag detected");
@@ -74,8 +94,6 @@ public class MainController implements Initializable {
 
         visualSourcePane.setOnDragEntered(new EventHandler<DragEvent>() {
             public void handle(DragEvent event) {
-                /* the drag-and-drop gesture entered the target */
- /* show to the user that it is an actual gesture target */
                 if (event.getGestureSource() != visualSourcePane
                         && event.getDragboard().hasString()) {
                     visualSourcePane.setEffect(new GaussianBlur(5));
@@ -87,7 +105,6 @@ public class MainController implements Initializable {
 
         visualSourcePane.setOnDragExited(new EventHandler<DragEvent>() {
             public void handle(DragEvent event) {
-                /* mouse moved away, remove the graphical cues */
                 visualSourcePane.setEffect(null);
 
                 event.consume();
@@ -114,6 +131,12 @@ public class MainController implements Initializable {
         });
 
         container.getChildren().add(rect);
+         */
+        HandleRegion myRegion1 = new HandleRectangle();
+        new DragManager(myRegion1, TransferMode.COPY);
+        container.getChildren().add(myRegion1);
+
+        new DropManager(visualSourcePane);
 
         LinkableRegion actionNode1 = new ActionNode(visualSourcePane, "jump");
         actionNode1.relocate(10, 10);
