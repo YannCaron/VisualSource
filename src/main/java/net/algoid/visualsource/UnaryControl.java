@@ -11,10 +11,10 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-import net.algoid.visualsource.core.AbstractVisualSource;
-import net.algoid.visualsource.core.AcceptationType;
-import net.algoid.visualsource.core.Hook;
-import net.algoid.visualsource.core.Hook.HookEvent;
+import net.algoid.visualsource.coreMove.AbstractVisualSource;
+import net.algoid.visualsource.coreMove.AcceptationType;
+import net.algoid.visualsource.coreMove.HookOld;
+import net.algoid.visualsource.coreMove.HookOld.HookEvent;
 
 /**
  *
@@ -38,12 +38,12 @@ public class UnaryControl extends AbstractNonTerminalNode {
 
     private final SVGPath shape;
     private final Text text;
-    private Hook expressionHook;
-    private Hook instructionHook, contentHook;
+    private HookOld expressionHook;
+    private HookOld instructionHook, contentHook;
     private double textWidth = 0;
 
     public UnaryControl(AbstractVisualSource placeHolder, String name) {
-        super(placeHolder, name, INSTRUCTION_BOUNDS);
+        super(placeHolder, name, INSTRUCTION_DRAG_BOUNDS, INSTRUCTION_HOLD_BOUNDS);
         shape = new SVGPath();
         text = new Text(name);
     }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.core;
+package net.algoid.visualsource.coreMove;
 
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -13,7 +13,7 @@ import javafx.scene.Node;
  *
  * @author cyann
  */
-public abstract class AssociatedHook extends Hook {
+public abstract class AssociatedHook extends HookOld {
 
     private final Node tip;
     private final double offsetX;

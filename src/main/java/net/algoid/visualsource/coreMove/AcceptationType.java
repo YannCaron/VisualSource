@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.core;
+package net.algoid.visualsource.coreMove;
 
 import java.util.HashMap;
 import java.util.Map;

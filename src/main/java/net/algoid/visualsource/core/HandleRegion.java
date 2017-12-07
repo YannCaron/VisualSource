@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.corenew;
+package net.algoid.visualsource.core;
 
 import javafx.application.Platform;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
 
@@ -14,28 +15,31 @@ import javafx.scene.layout.Region;
  * @author cyann
  */
 public abstract class HandleRegion extends Region {
-    
+
     private final HoldType holdType;
-    
+    private final Bounds initialBoundsInLocal;
+
     public HandleRegion(HoldType holdType) {
-        this.getChildren().add(getGraphic());
+        Node graphic = createGraphic();
+        initialBoundsInLocal = graphic.getBoundsInLocal();
+        this.getChildren().add(graphic);
         this.holdType = holdType;
-        
+
         Platform.runLater(this::applyLayout);
     }
-    
-    public abstract HandleRegion createNew();
-    
-    public abstract Node getGraphic();
-    
+
+    public abstract HandleRegion newInstance();
+
+    public abstract Node createGraphic();
+
     public abstract void applyLayout();
-    
-    public Hook createHook(HoldType type) {
-        Hook hook = new Hook(type, 25, 25);
+
+    public Bounds getInitialBoundsInLocal() {
+        return initialBoundsInLocal;
+    }
+
+    public Hook addHook(Hook hook) {
         getChildren().add(hook);
-        
-        new DropManager(hook);
-        
         return hook;
     }
 }

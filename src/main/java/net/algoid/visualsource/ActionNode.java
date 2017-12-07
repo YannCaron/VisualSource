@@ -10,9 +10,9 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-import net.algoid.visualsource.core.AbstractVisualSource;
-import net.algoid.visualsource.core.AcceptationType;
-import net.algoid.visualsource.core.Hook;
+import net.algoid.visualsource.coreMove.AbstractVisualSource;
+import net.algoid.visualsource.coreMove.AcceptationType;
+import net.algoid.visualsource.coreMove.HookOld;
 
 /**
  *
@@ -31,7 +31,7 @@ public class ActionNode extends AbstractNonTerminalNode {
     private double textWidth = 0;
     
     public ActionNode(AbstractVisualSource placeHolder, String name) {
-        super(placeHolder, name, INSTRUCTION_BOUNDS);
+        super(placeHolder, name, INSTRUCTION_DRAG_BOUNDS, INSTRUCTION_HOLD_BOUNDS);
         text = new Text(getName());
     }
 
@@ -60,7 +60,7 @@ public class ActionNode extends AbstractNonTerminalNode {
 
     @Override
     protected void initializeLayout() {
-        Hook instructionHook = createInstructionHook(true);
+        HookOld instructionHook = createInstructionHook(true);
         instructionHook.setLayoutY(UNIT);
         
     }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.core;
+package net.algoid.visualsource.coreMove;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,8 +47,8 @@ public abstract class LinkableRegion extends Region implements HookQueryable, Ra
     // attribut
     private final Pane graphic;
     protected final AbstractVisualSource placeHolder;
-    private final Map<Hook.Direction, Hook> linkableHook;
-    private final List<Hook> hooks;
+    private final Map<HookOld.Direction, HookOld> linkableHook;
+    private final List<HookOld> hooks;
     private AcceptationType typeOf;
 
     // constructor
@@ -92,8 +92,8 @@ public abstract class LinkableRegion extends Region implements HookQueryable, Ra
 
     // chain of responsibility
     public LinkableRegion getHead() {
-        if (getParent() instanceof Hook) {
-            return ((Hook) getParent()).getParentLink().getHead();
+        if (getParent() instanceof HookOld) {
+            return ((HookOld) getParent()).getParentLink().getHead();
         }
         return this;
     }
@@ -102,7 +102,7 @@ public abstract class LinkableRegion extends Region implements HookQueryable, Ra
     public double computeRawHeight() {
         double height = getRawHeight();
 
-        Hook linkHook = linkableHook.get(Hook.Direction.vertical);
+        HookOld linkHook = linkableHook.get(HookOld.Direction.vertical);
         if (linkHook != null && linkHook.hasChild()) {
             height += linkHook.getChild().computeRawHeight();
         }
@@ -113,7 +113,7 @@ public abstract class LinkableRegion extends Region implements HookQueryable, Ra
     public double computeRawWidth() {
         double width = getRawWidth();
 
-        Hook linkHook = linkableHook.get(Hook.Direction.horizontal);
+        HookOld linkHook = linkableHook.get(HookOld.Direction.horizontal);
         if (linkHook != null && linkHook.hasChild()) {
             width += linkHook.getChild().computeRawWidth();
         }
@@ -122,13 +122,13 @@ public abstract class LinkableRegion extends Region implements HookQueryable, Ra
     }
 
     // method
-    public final Hook addHook(Hook.Direction direction, boolean chainable) {
-        Hook hook = new Hook(this, direction);
+    public final HookOld addHook(HookOld.Direction direction, boolean chainable) {
+        HookOld hook = new HookOld(this, direction);
         addHook(hook, chainable);
         return hook;
     }
 
-    public final void addHook(Hook hook, boolean linkable) {
+    public final void addHook(HookOld hook, boolean linkable) {
         hook.setParent(this);
         getChildren().add(hook);
         hooks.add(hook);
@@ -141,11 +141,11 @@ public abstract class LinkableRegion extends Region implements HookQueryable, Ra
     }
 
     @Override
-    public Hook queryHookIntersection(HoldableRegion query) {
+    public HookOld queryHookIntersection(HoldableRegion query) {
         // Depth first search
         for (Node child : getChildren()) {
-            if (child instanceof Hook) {
-                Hook found = ((Hook) child).queryHookIntersection(query);
+            if (child instanceof HookOld) {
+                HookOld found = ((HookOld) child).queryHookIntersection(query);
                 if (found != null) {
                     return found;
                 }
@@ -155,9 +155,9 @@ public abstract class LinkableRegion extends Region implements HookQueryable, Ra
         return null;
     }
 
-    public Hook findChainableHook(Hook.Direction direction) {
+    public HookOld findChainableHook(HookOld.Direction direction) {
         // hash tree depth first search
-        Hook hook = linkableHook.get(direction);
+        HookOld hook = linkableHook.get(direction);
 
         if (hook != null && hook.hasChild()) {
             return hook.getChild().findChainableHook(direction);

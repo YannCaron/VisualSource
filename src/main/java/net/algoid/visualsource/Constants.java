@@ -5,7 +5,7 @@
  */
 package net.algoid.visualsource;
 
-import net.algoid.visualsource.core.AcceptationType;
+import net.algoid.visualsource.coreMove.AcceptationType;
 
 /**
  *

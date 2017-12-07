@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.core;
+package net.algoid.visualsource.coreMove;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -38,10 +38,10 @@ public abstract class AbstractVisualSource extends Pane implements HookQueryable
 
     // depth first search
     @Override
-    public Hook queryHookIntersection(HoldableRegion query) {
+    public HookOld queryHookIntersection(HoldableRegion query) {
         for (Node child : getChildren()) {
             if (child != query && child instanceof HoldableRegion) {
-                Hook found = ((HoldableRegion) child).queryHookIntersection(query);
+                HookOld found = ((HoldableRegion) child).queryHookIntersection(query);
                 if (found != null) {
                     return found;
                 }

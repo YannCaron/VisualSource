@@ -10,7 +10,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import net.algoid.visualsource.core.AbstractVisualSource;
+import net.algoid.visualsource.coreMove.AbstractVisualSource;
 
 /**
  *

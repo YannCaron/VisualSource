@@ -5,8 +5,6 @@
  */
 package net.algoid.visualsource;
 
-import net.algoid.visualsource.core.AbstractVisualSource;
-import net.algoid.visualsource.core.LinkableRegion;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -16,10 +14,10 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import net.algoid.visualsource.corenew.DragManager;
-import net.algoid.visualsource.corenew.DropManager;
-import net.algoid.visualsource.corenew.HandleRegion;
-import net.algoid.visualsource.corenew.HoldType;
+import net.algoid.visualsource.core.DragManager;
+import net.algoid.visualsource.core.HandleRegion;
+import net.algoid.visualsource.core.HoldType;
+import net.algoid.visualsource.core.Hook;
 
 /**
  * FXML Controller class
@@ -27,36 +25,50 @@ import net.algoid.visualsource.corenew.HoldType;
  * @author cyann
  */
 public class MainController implements Initializable {
-
+    
+    private static class SquareHook extends Hook {
+        
+        public SquareHook() {
+            super(HoldType.ALL);
+        }
+        
+        @Override
+        protected Node createTip() {
+            return new Rectangle(25, 25, Color.WHITE);
+        }
+    }
+    
     private static class HandleRectangle extends HandleRegion {
-
+        
         public HandleRectangle() {
             super(HoldType.ALL);
         }
-
+        
         @Override
-        public HandleRegion createNew() {
+        public HandleRegion newInstance() {
             HandleRectangle newInstance = new HandleRectangle();
-            net.algoid.visualsource.corenew.Hook hook = newInstance.createHook(HoldType.ALL);
-            hook.relocate(150, 0);
+            DragManager.apply(newInstance, TransferMode.MOVE);
+            Hook hook = new SquareHook();
+            newInstance.addHook(hook);
+            hook.relocate(150, 70);
             return newInstance;
         }
-
+        
         @Override
-        public Node getGraphic() {
+        public Node createGraphic() {
             return new Rectangle(150, 70, Color.color(Math.random(), Math.random(), Math.random()));
         }
-
+        
         @Override
         public void applyLayout() {
         }
     }
-
+    
     @FXML
     VBox container;
-
+    
     @FXML
-    AbstractVisualSource visualSourcePane;
+    VisualSourcePane visualSourcePane;
 
     /**
      * Initializes the controller class.
@@ -133,11 +145,10 @@ public class MainController implements Initializable {
         container.getChildren().add(rect);
          */
         HandleRegion myRegion1 = new HandleRectangle();
-        new DragManager(myRegion1, TransferMode.COPY);
+        DragManager.apply(myRegion1, TransferMode.COPY);
         container.getChildren().add(myRegion1);
-
-        new DropManager(visualSourcePane);
-
+        
+        /*
         LinkableRegion actionNode1 = new ActionNode(visualSourcePane, "jump");
         actionNode1.relocate(10, 10);
         LinkableRegion actionNode2 = new ActionNode(visualSourcePane, "go");
@@ -148,7 +159,7 @@ public class MainController implements Initializable {
         actionNode4.relocate(310, 10);
         LinkableRegion actionNode5 = new ActionNode(visualSourcePane, "draw");
         actionNode5.relocate(410, 10);
-
+        
         LinkableRegion controlNode1 = new UnaryControl(visualSourcePane, "loop");
         controlNode1.relocate(10, 110);
         LinkableRegion controlNode2 = new UnaryControl(visualSourcePane, "while");
@@ -159,7 +170,7 @@ public class MainController implements Initializable {
         controlNode4.relocate(310, 110);
         LinkableRegion controlNode5 = new UnaryControl(visualSourcePane, "always");
         controlNode5.relocate(410, 110);
-
+        
         LinkableRegion operatorNode1 = new BinaryOperator(visualSourcePane, "equal", "=");
         operatorNode1.relocate(10, 210);
         LinkableRegion operatorNode2 = new BinaryOperator(visualSourcePane, "no equal", "≠");
@@ -170,13 +181,13 @@ public class MainController implements Initializable {
         operatorNode4.relocate(310, 210);
         LinkableRegion operatorNode5 = new BinaryOperator(visualSourcePane, "less than", "<");
         operatorNode5.relocate(410, 210);
-
+        
         visualSourcePane.getChildren().addAll(actionNode1, actionNode2, actionNode3, actionNode4, actionNode5);
         visualSourcePane.getChildren().addAll(controlNode1, controlNode2, controlNode3, controlNode4, controlNode5);
         visualSourcePane.getChildren().addAll(operatorNode1, operatorNode2, operatorNode3, operatorNode4, operatorNode5);
-
+        */
     }
-
+    
     public void setData() {
     }
 }

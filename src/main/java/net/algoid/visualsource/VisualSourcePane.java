@@ -5,16 +5,16 @@
  */
 package net.algoid.visualsource;
 
-import net.algoid.visualsource.core.AbstractVisualSource;
+import net.algoid.visualsource.core.DropPane;
 
 /**
  *
  * @author cyann
  */
-public class VisualSourcePane extends AbstractVisualSource {
+public class VisualSourcePane extends DropPane {
 
     @Override
-    protected void initialize() {
+    protected void initializeLayout() {
         getStylesheets().add(getClass().getResource("/styles/visual-source.css").toExternalForm());
     }
 

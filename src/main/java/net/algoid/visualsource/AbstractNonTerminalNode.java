@@ -11,11 +11,11 @@ import javafx.scene.Node;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.shape.Circle;
-import net.algoid.visualsource.core.AbstractVisualSource;
-import net.algoid.visualsource.core.AcceptationType;
-import net.algoid.visualsource.core.AssociatedHook;
-import net.algoid.visualsource.core.HoldableRegion;
-import net.algoid.visualsource.core.Hook;
+import net.algoid.visualsource.coreMove.AbstractVisualSource;
+import net.algoid.visualsource.coreMove.AcceptationType;
+import net.algoid.visualsource.coreMove.AssociatedHook;
+import net.algoid.visualsource.coreMove.HoldableRegion;
+import net.algoid.visualsource.coreMove.HookOld;
 
 /**
  *
@@ -24,8 +24,10 @@ import net.algoid.visualsource.core.Hook;
 public abstract class AbstractNonTerminalNode extends HoldableRegion implements Constants {
 
     // constant
-    public static final Bounds INSTRUCTION_BOUNDS = new BoundingBox(0, 0, UNIT * 3, UNIT * 0.3);
-    public static final Bounds EXPRESSION_BOUNDS = new BoundingBox(0, 0, UNIT * 2, UNIT);
+    public static final Bounds INSTRUCTION_HOLD_BOUNDS = new BoundingBox(0, 0, UNIT * 3, UNIT * 0.3);
+    public static final Bounds INSTRUCTION_DRAG_BOUNDS = new BoundingBox(0, 0, UNIT * 4, UNIT);
+    public static final Bounds EXPRESSION_DRAG_BOUNDS = new BoundingBox(0, 0, UNIT * 2, UNIT);
+    public static final Bounds EXPRESSION_HOLD_BOUNDS = new BoundingBox(0, 0, UNIT * 2, UNIT);
 
     public static final Effect DRAG_EFFECT = new GaussianBlur(5);
     public static final double OVER_OPACITY = 0.5;
@@ -34,8 +36,8 @@ public abstract class AbstractNonTerminalNode extends HoldableRegion implements 
     private final String name;
 
     // constructor
-    public AbstractNonTerminalNode(AbstractVisualSource placeHolder, String name, Bounds bounds) {
-        super(placeHolder, bounds);
+    public AbstractNonTerminalNode(AbstractVisualSource placeHolder, String name, Bounds dragBounds, Bounds holdBounds) {
+        super(placeHolder, dragBounds, holdBounds);
         this.name = name;
         this.setTypeOf(getAcceptationType());
 
@@ -54,12 +56,12 @@ public abstract class AbstractNonTerminalNode extends HoldableRegion implements 
     protected abstract AcceptationType getAcceptationType();
 
     // method
-    public Hook createInstructionHook(boolean linkable) {
+    public HookOld createInstructionHook(boolean linkable) {
         Circle shape = new Circle(22, -2, 4);
         getChildren().add(shape);
         shape.getStyleClass().add("hook-tip");
 
-        Hook hook = new AssociatedHook(this, shape, Hook.Direction.vertical) {
+        HookOld hook = new AssociatedHook(this, shape, HookOld.Direction.vertical) {
             @Override
             protected void applyOverEffect(Node tip) {
                 tip.setVisible(true);
@@ -78,12 +80,12 @@ public abstract class AbstractNonTerminalNode extends HoldableRegion implements 
         return hook;
     }
 
-    public Hook createExpressionHook(double x, double unit) {
+    public HookOld createExpressionHook(double x, double unit) {
         Circle shape = new Circle(unit, unit, 4);
         getChildren().add(shape);
         shape.getStyleClass().add("hook-tip");
 
-        Hook hook = new AssociatedHook(this, shape, Hook.Direction.horizontal) {
+        HookOld hook = new AssociatedHook(this, shape, HookOld.Direction.horizontal) {
             @Override
             protected void applyOverEffect(Node tip) {
                 tip.setVisible(true);

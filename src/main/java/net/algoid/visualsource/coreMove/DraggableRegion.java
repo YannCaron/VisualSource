@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.core;
+package net.algoid.visualsource.coreMove;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Shape;
 
 /**
  *
@@ -14,12 +16,16 @@ import javafx.scene.input.MouseEvent;
  */
 public abstract class DraggableRegion extends LinkableRegion {
 
+    private final Bounds dragBoundsInLocal;
     private double currentDeltaX = 0;
     private double currentDeltaY = 0;
+    private boolean dragAccept;
 
     // constructor
-    public DraggableRegion(AbstractVisualSource placeHolder) {
+    public DraggableRegion(AbstractVisualSource placeHolder, Bounds dragBoundsInLocal) {
         super(placeHolder);
+        this.dragBoundsInLocal = dragBoundsInLocal;
+        this.dragAccept = false;
 
         // event management
         setOnMousePressed(this::this_onMousePresser);
@@ -61,32 +67,42 @@ public abstract class DraggableRegion extends LinkableRegion {
     // abstract
     // event handling
     protected void this_onMousePresser(MouseEvent event) {
-        currentDeltaX = event.getX();
-        currentDeltaY = event.getY();
+        dragAccept = dragBoundsInLocal.contains(event.getX(), event.getY());
+        //Shape.intersect(shape1, shape2)
 
-        if (getParent() instanceof Hook) {
-            ((Hook) getParent()).removeChild();
-            placeHolder.getChildren().add(this);
-            this_onMouseDragged(event);
+        if (dragAccept) {
+
+            currentDeltaX = event.getX();
+            currentDeltaY = event.getY();
+
+            if (getParent() instanceof HookOld) {
+                ((HookOld) getParent()).removeChild();
+                placeHolder.getChildren().add(this);
+                this_onMouseDragged(event);
+            }
+
+            this.toFront();
+            this.fireEvent(new LinkableRegionEvent(this, LinkableRegionEvent.DRAG_STARTED));
+            event.consume();
         }
-
-        this.toFront();
-        this.fireEvent(new LinkableRegionEvent(this, LinkableRegionEvent.DRAG_STARTED));
-        event.consume();
 
     }
 
     protected void this_onMouseDragged(MouseEvent event) {
-        Point2D pt = placeHolder.sceneToLocal(event.getSceneX(), event.getSceneY());
-        double x = pt.getX() - currentDeltaX;
-        double y = pt.getY() - currentDeltaY;
+        if (dragAccept) {
+            Point2D pt = placeHolder.sceneToLocal(event.getSceneX(), event.getSceneY());
+            double x = pt.getX() - currentDeltaX;
+            double y = pt.getY() - currentDeltaY;
 
-        setLayoutX(limitX(x));
-        setLayoutY(limitY(y));
+            setLayoutX(limitX(x));
+            setLayoutY(limitY(y));
+        }
     }
 
     protected void this_onMouseReleased(MouseEvent event) {
-        this.fireEvent(new LinkableRegionEvent(this, LinkableRegionEvent.DRAG_STOPPED));
+        if (dragAccept) {
+            this.fireEvent(new LinkableRegionEvent(this, LinkableRegionEvent.DRAG_STOPPED));
+        }
     }
 
 }

@@ -5,171 +5,104 @@
  */
 package net.algoid.visualsource.core;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
 /**
  *
  * @author cyann
  */
-public class Hook extends Region implements HookQueryable, RawSizeComputable {
+public abstract class Hook extends Region {
 
-    // inner
-    public static class HookEvent extends Event {
+    private final HoldType type;
+    private final Node tip;
+    private final Pane tipContainer;
+    private Node child;
 
-        public static final EventType<HookEvent> OVER = new EventType<>("LINKABLE_OVER_HOOK");
-        public static final EventType<HookEvent> OUT = new EventType<>("LINKABLE_OUT_HOOK");
-        public static final EventType<HookEvent> HANG = new EventType<>("LINKABLE_HANG");
-        public static final EventType<HookEvent> RELEASE = new EventType<>("LINKABLE_RELEASE");
+    public Hook(HoldType type) {
+        this.type = type;
 
-        private final Hook hook;
-        private final LinkableRegion region;
+        this.tipContainer = new Pane();
+        this.getChildren().add(tipContainer);
 
-        public HookEvent(Hook hook, LinkableRegion region, EventType<? extends HookEvent> eventType) {
-            super(hook, null, eventType);
-            this.hook = hook;
-            this.region = region;
-        }
+        tipContainer.toFront();
 
-        public Hook getHook() {
-            return hook;
-        }
+        tip = createTip();
+        tipContainer.getChildren().add(tip);
+        tipContainer.setPrefSize(tip.getBoundsInLocal().getWidth(), tip.getBoundsInLocal().getHeight());
+        hideTip();
 
-        public LinkableRegion getRegion() {
-            return region;
-        }
+        tipContainer.setPickOnBounds(false);
+        tipContainer.setOnDragOver(this::tip_onDragOver);
+        tipContainer.setOnDragDropped(this::tip_onDragDropped);
+
+        tipContainer.setOnDragEntered(this::tip_onDragEntered);
+        tipContainer.setOnDragExited(this::tip_onDragExited);
 
     }
 
-    public enum Direction {
-        none, horizontal, vertical
+    protected abstract Node createTip();
+
+    public void showTip() {
+        tip.setVisible(true);
     }
 
-    // attribute
-    private final Hook.Direction direction;
-    private LinkableRegion parent;
-    private final Bounds hookBoundsInLocal;
-    private AcceptationType acceptType;
-
-    // constructor
-    public Hook(LinkableRegion parent, Direction direction) {
-        this.direction = direction;
-        this.parent = parent;
-        this.hookBoundsInLocal = new BoundingBox(0, 0, 1, 1);
-        acceptType = AcceptationType.ALL;
+    public void hideTip() {
+        tip.setVisible(false);
     }
 
-    public Hook(LinkableRegion parent, Direction direction, Bounds hookBoundsInLocal) {
-        this.direction = direction;
-        this.parent = parent;
-        this.hookBoundsInLocal = hookBoundsInLocal;
-        acceptType = AcceptationType.ALL;
+    public void setChild(Node child) {
+        removeChild();
+        this.getChildren().add(child);
+        child.relocate(0, 0);
+        tipContainer.toFront();
+        this.child = child;
     }
 
-    // accessor
-    public void setParent(LinkableRegion parent) {
-        this.parent = parent;
-    }
-
-    public LinkableRegion getParentLink() {
-        return parent;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public AcceptationType getAcceptType() {
-        return acceptType;
-    }
-
-    public void setAcceptType(AcceptationType acceptType) {
-        this.acceptType = acceptType;
-    }
-
-    public Bounds getHookBoundsInLocal() {
-        return hookBoundsInLocal;
-    }
-
-    public void setChild(LinkableRegion child) {
-        getChildren().clear();
-        getChildren().add(child);
-        fireEvent(new HookEvent(this, child, HookEvent.HANG));
-    }
-
-    public LinkableRegion getChild() {
-        if (hasChild()) {
-            return (LinkableRegion) getChildren().get(0);
-        }
-        return null;
-    }
-
-    public boolean hasChild() {
-        return getChildren().size() == 1;
-    }
-
-    @Override
-    public double getRawHeight() {
-        if (hasChild()) {
-            return getChild().computeRawHeight();
-        }
-        return 0;
-    }
-
-    @Override
-    public double getRawWidth() {
-        if (hasChild()) {
-            return getChild().computeRawWidth();
-        }
-        return 0;
-    }
-
-    // method
     public void removeChild() {
-        LinkableRegion released = getChild();
-        getChildren().clear();
-        fireEvent(new HookEvent(this, released, HookEvent.RELEASE));
+        this.getChildren().remove(child);
     }
 
-    // depth first search
-    @Override
-    public Hook queryHookIntersection(HoldableRegion query) {
-        if (hasChild()) {
+    // event management
+    protected void tip_onDragEntered(DragEvent event) {
+        if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
+            showTip();
+            event.consume();
+        }
+    }
 
-            // chain of responcibility
-            Hook found = getChild().queryHookIntersection(query);
-            if (found != null) {
-                return found;
+    protected void tip_onDragExited(DragEvent event) {
+        if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
+            hideTip();
+            event.consume();
+        }
+    }
+
+    protected void tip_onDragOver(DragEvent event) {
+        if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
+            event.acceptTransferModes(TransferMode.ANY);
+            event.consume();
+        }
+    }
+
+    protected void tip_onDragDropped(DragEvent event) {
+        if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
+            // DragContext context = (DragContext) event.getDragboard().getContent(DragContext.HANDLE_FORMAT);
+            HandleRegion region = (HandleRegion) event.getGestureSource();
+
+            if (event.getAcceptedTransferMode() == TransferMode.COPY) {
+                HandleRegion newInstance = region.newInstance();
+                setChild(newInstance);
+            } else if (event.getAcceptedTransferMode() == TransferMode.MOVE) {
+                setChild(region);
             }
+            
+            event.consume();
         }
-
-        if (query.isIntersectHook(this) && getAcceptType().match(query.getTypeOf())) {
-            return this;
-        }
-
-        return null;
     }
 
-    // event
-    public final void setOnOverEvent(EventHandler<HookEvent> handler) {
-        getParentLink().getPlaceHolder().activateHookHandeling();
-        addEventHandler(HookEvent.OVER, handler);
-    }
-
-    public final void setOnOutEvent(EventHandler<HookEvent> handler) {
-        getParentLink().getPlaceHolder().activateHookHandeling();
-        addEventHandler(HookEvent.OUT, handler);
-    }
-
-    public final void setOnHangEvent(EventHandler<HookEvent> handler) {
-        addEventHandler(HookEvent.HANG, handler);
-    }
-
-    public final void setOnReleaseEvent(EventHandler<HookEvent> handler) {
-        addEventHandler(HookEvent.RELEASE, handler);
-    }
 }

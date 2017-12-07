@@ -3,19 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.coreMove;
 
 import net.algoid.visualsource.coreMove.AbstractVisualSource;
-import net.algoid.visualsource.coreMove.LinkableRegion;
 
 /**
  *
  * @author cyann
  */
-public abstract class AbstractTerminalNode extends LinkableRegion implements Constants {
+public class VisualSourcePane extends AbstractVisualSource {
 
-    public AbstractTerminalNode(AbstractVisualSource placeHolder) {
-        super(placeHolder);
+    @Override
+    protected void initialize() {
+        getStylesheets().add(getClass().getResource("/styles/visual-source.css").toExternalForm());
     }
-    
+
 }

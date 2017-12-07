@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.core;
+package net.algoid.visualsource.coreMove;
 
 /**
  *
  * @author cyann
  */
-public interface HookQueryable {
+public interface RawSizeComputable {
 
-    // Depth first search
-    Hook queryHookIntersection(HoldableRegion query);
+    double getRawHeight();
 
+    double getRawWidth();
+    
 }

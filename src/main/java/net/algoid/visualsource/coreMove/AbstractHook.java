@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource.core;
+package net.algoid.visualsource.coreMove;
 
 import javafx.event.EventHandler;
 import javafx.scene.layout.Region;
-import net.algoid.visualsource.core.Hook.Direction;
+import net.algoid.visualsource.coreMove.HookOld.Direction;
 
 /**
  *
@@ -25,7 +25,7 @@ public abstract class AbstractHook extends Region implements HookQueryable {
 
     // depth first search
     @Override
-    public abstract Hook queryHookIntersection(HoldableRegion query);
+    public abstract HookOld queryHookIntersection(HoldableRegion query);
 
     // method
     public abstract void removeChild();
@@ -36,21 +36,21 @@ public abstract class AbstractHook extends Region implements HookQueryable {
     public abstract void setParent(LinkableRegion parent);
 
     // event
-    public void setOnOverEvent(EventHandler<Hook.HookEvent> handler) {
+    public void setOnOverEvent(EventHandler<HookOld.HookEvent> handler) {
         getParentLink().getPlaceHolder().activateHookHandeling();
-        addEventHandler(Hook.HookEvent.OVER, handler);
+        addEventHandler(HookOld.HookEvent.OVER, handler);
     }
 
-    public void setOnOutEvent(EventHandler<Hook.HookEvent> handler) {
+    public void setOnOutEvent(EventHandler<HookOld.HookEvent> handler) {
         getParentLink().getPlaceHolder().activateHookHandeling();
-        addEventHandler(Hook.HookEvent.OUT, handler);
+        addEventHandler(HookOld.HookEvent.OUT, handler);
     }
 
-    public void setOnHangEvent(EventHandler<Hook.HookEvent> handler) {
-        addEventHandler(Hook.HookEvent.HANG, handler);
+    public void setOnHangEvent(EventHandler<HookOld.HookEvent> handler) {
+        addEventHandler(HookOld.HookEvent.HANG, handler);
     }
 
-    public void setOnReleaseEvent(EventHandler<Hook.HookEvent> handler) {
-        addEventHandler(Hook.HookEvent.RELEASE, handler);
+    public void setOnReleaseEvent(EventHandler<HookOld.HookEvent> handler) {
+        addEventHandler(HookOld.HookEvent.RELEASE, handler);
     }
 }

@@ -11,10 +11,10 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import net.algoid.visualsource.core.AbstractVisualSource;
-import net.algoid.visualsource.core.AcceptationType;
-import net.algoid.visualsource.core.Hook;
-import net.algoid.visualsource.core.Hook.HookEvent;
+import net.algoid.visualsource.coreMove.AbstractVisualSource;
+import net.algoid.visualsource.coreMove.AcceptationType;
+import net.algoid.visualsource.coreMove.HookOld;
+import net.algoid.visualsource.coreMove.HookOld.HookEvent;
 
 /**
  *
@@ -24,11 +24,11 @@ public class BinaryOperator extends AbstractNonTerminalNode {
 
     private final Rectangle shape;
     private final Text text;
-    private Hook leftHook, rightHook;
+    private HookOld leftHook, rightHook;
     private double textWidth = 0;
 
     public BinaryOperator(AbstractVisualSource placeHolder, String name, String symbol) {
-        super(placeHolder, name, EXPRESSION_BOUNDS);
+        super(placeHolder, name, EXPRESSION_DRAG_BOUNDS, EXPRESSION_HOLD_BOUNDS);
         shape = new Rectangle(UNIT * 4, UNIT);
         shape.setArcHeight(UNIT);
         shape.setArcWidth(UNIT);
