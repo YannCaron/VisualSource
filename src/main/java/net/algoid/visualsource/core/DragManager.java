@@ -32,7 +32,7 @@ public class DragManager {
     private final TransferMode transferMode;
     private Parent lastParent;
 
-    public static void apply(HandleRegion hendleRegion, TransferMode transferMode) {
+    static void apply(HandleRegion hendleRegion, TransferMode transferMode) {
         new DragManager(hendleRegion, transferMode);
     }
 

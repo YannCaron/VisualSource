@@ -8,7 +8,7 @@ and open the template in the editor.
     Author     : cyann
 */
 
-.in-action{
+.ActionNode{
     -fx-fill:#648ee4;
     /*-fx-stroke:#4278dcff;*/
     -fx-stroke:#5379c0;
@@ -28,7 +28,7 @@ and open the template in the editor.
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 5,0,0,0 );
 }
 
-.in-text{
+.text{
     -fx-font:20px "Sans-Serif";
     -fx-fill: #ffffff;
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 10,0,0,0 );
@@ -44,7 +44,12 @@ and open the template in the editor.
     -fx-fill:#739831;
 }
 
-.hook-tip{
-    -fx-fill: rgba(255,255,255,0.25);
-    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.75) , 15,0.95,0,0 );
+.Hook{
+    /*-fx-fill: rgba(255,255,255,0.25);
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.75) , 15,0.95,0,0 );*/
+    -fx-fill: rgba(255,255,255,0);
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,1) , 10,0,0,0 );
+    -fx-stroke: rgba(255,255,255,1);
+    -fx-stroke-width: 5;
+    -fx-stroke-line-cap:butt;
 }

@@ -3,18 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
-
-import net.algoid.visualsource.core.DropPane;
+package net.algoid.visualsource.core;
 
 /**
  *
  * @author cyann
  */
-public class VisualSourcePane extends DropPane {
+public interface RawSizeQueryable {
 
-    @Override
-    protected void initializeLayout() {
-    }
+    double getRawHeight();
+
+    double getRawWidth();
 
 }

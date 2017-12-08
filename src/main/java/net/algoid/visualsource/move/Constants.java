@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.move;
 
-import net.algoid.visualsource.core.HoldType;
+import net.algoid.visualsource.coreMove.AcceptationType;
 
 /**
  *
@@ -13,9 +13,11 @@ import net.algoid.visualsource.core.HoldType;
  */
 public interface Constants {
 
+    // acceptation type enum
+    public static final AcceptationType INSTRUCTION = new AcceptationType("INSTRUCTION");
+    public static final AcceptationType EXPRESSION = new AcceptationType("EXPRESSION");
+
     public static final double UNIT = 35;
     public static final double BORDER = 15;
-
-    public static final HoldType INSTRUCTION = new HoldType("INSTRUCTION");
 
 }

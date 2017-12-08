@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.algoid.visualsource;
+package net.algoid.visualsource.move;
 
 import javafx.geometry.VPos;
 import javafx.scene.Group;
@@ -16,14 +16,13 @@ import net.algoid.visualsource.coreMove.AbstractVisualSource;
  *
  * @author cyann
  */
-public class BooleanNode extends AbstractTerminalNode {
+public class NumberNode extends AbstractTerminalNode {
 
-    private boolean value;
+    private double value;
     private final Rectangle shape;
     private final Text text;
-    private double textWidth = 0;
 
-    public BooleanNode(AbstractVisualSource placeHolder, boolean value) {
+    public NumberNode(AbstractVisualSource placeHolder, double value) {
         super(placeHolder);
         this.value = value;
         shape = new Rectangle(UNIT, UNIT);
@@ -38,11 +37,9 @@ public class BooleanNode extends AbstractTerminalNode {
         text.setX(BORDER * 0.5 - 2);
         text.setTextOrigin(VPos.CENTER);
         text.setY(UNIT / 2);
-        text.applyCss();
-        textWidth = text.getLayoutBounds().getWidth();
 
         shape.getStyleClass().add("expression");
-        shape.getStyleClass().add("expression-boolean");
+        shape.getStyleClass().add("expression-number");
 
         return new Group(shape, text);
     }
@@ -64,7 +61,7 @@ public class BooleanNode extends AbstractTerminalNode {
 
     @Override
     public double getRawWidth() {
-        return textWidth + BORDER;
+        return text.getLayoutBounds().getWidth() + BORDER;
     }
 
 }

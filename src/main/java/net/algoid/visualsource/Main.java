@@ -29,8 +29,9 @@ public class Main extends Application {
         Parent root = loader.load();
         MainController controler = loader.getController();
         Scene scene = new Scene(root);
-        
+
         scene.getStylesheets().add(getClass().getResource("/styles/skin.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/styles/visual-source.css").toExternalForm());
 
         primaryStage.setTitle("Visual Source FX");
         primaryStage.setScene(scene);

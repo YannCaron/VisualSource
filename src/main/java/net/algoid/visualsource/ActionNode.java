@@ -8,18 +8,18 @@ package net.algoid.visualsource;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.input.TransferMode;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-import net.algoid.visualsource.coreMove.AbstractVisualSource;
-import net.algoid.visualsource.coreMove.AcceptationType;
-import net.algoid.visualsource.coreMove.HookOld;
+import net.algoid.visualsource.core.HandleRegion;
+import net.algoid.visualsource.core.Hook;
 
 /**
  *
  * @author cyann
  */
-public class ActionNode extends AbstractNonTerminalNode {
-    
+public class ActionNode extends AbstractSyntaxNode implements Constants {
+
     public static final String SVG_FORMAT
             = "m 0,0 0,%2$f 15,0 "
             + "a 7.5,7.5 0 0 0 7,5 7.5,7.5 0 0 0 7,-5 "
@@ -27,42 +27,47 @@ public class ActionNode extends AbstractNonTerminalNode {
             + "A 7.5,7.5 0 0 1 22.5,5 7.5,7.5 0 0 1 15,0 "
             + "L 0,0 Z";
 
-    private final Text text;
+    private final Text textView;
+    private final SVGPath shape;
     private double textWidth = 0;
-    
-    public ActionNode(AbstractVisualSource placeHolder, String name) {
-        super(placeHolder, name, INSTRUCTION_DRAG_BOUNDS, INSTRUCTION_HOLD_BOUNDS);
-        text = new Text(getName());
+
+    public ActionNode(String name) {
+        super(name, INSTRUCTION);
+        this.textView = new Text(name);
+        shape = new SVGPath();
     }
 
     @Override
-    protected AcceptationType getAcceptationType() {
-        return AbstractNonTerminalNode.INSTRUCTION;
-    }
-    
-    @Override
-    protected Node getGraphic() {
-        text.getStyleClass().add("in-text");
-        text.setX(BORDER);
-        text.setTextOrigin(VPos.CENTER);
-        text.setY(UNIT / 2 - 1);
-        text.applyCss();
-        textWidth = text.getLayoutBounds().getWidth();
+    public HandleRegion newInstance() {
+        HandleRegion newInstance = new ActionNode(getName()).applyDragManager(TransferMode.MOVE);
 
-        SVGPath shape = new SVGPath();
+        Hook instructionHook = new InstructionHook(getRawWidth());
+        newInstance.addLinkedHook(instructionHook);
+        instructionHook.relocate(0, getRawHeight());
+
+        return newInstance;
+    }
+
+    @Override
+    public Node createView() {
+        textView.getStyleClass().add(String.format("text"));
+        textView.getStyleClass().add(String.format("%s-text", this.getClass().getSimpleName()));
+        textView.setX(BORDER);
+        textView.setTextOrigin(VPos.CENTER);
+        textView.setY(UNIT / 2 - 1);
+        textView.applyCss();
+        textWidth = textView.getLayoutBounds().getWidth();
+
         shape.setContent(String.format(SVG_FORMAT, getRawWidth(), UNIT));
-        shape.getStyleClass().add("in");
-        shape.getStyleClass().add("in-action");
-        shape.getStyleClass().add(String.format("in-action-%s", getName().replace(" ", "-")));
+        shape.getStyleClass().add(AbstractSyntaxNode.class.getSimpleName());
+        shape.getStyleClass().add(this.getClass().getSimpleName());
+        shape.getStyleClass().add(String.format("%s-%s", this.getClass().getSimpleName(), getName().replace(" ", "-")));
 
-        return new Group(shape, text);
+        return new Group(shape, textView);
     }
 
     @Override
-    protected void initializeLayout() {
-        HookOld instructionHook = createInstructionHook(true);
-        instructionHook.setLayoutY(UNIT);
-        
+    public void applyLayout() {
     }
 
     @Override
@@ -74,6 +79,4 @@ public class ActionNode extends AbstractNonTerminalNode {
     public double getRawWidth() {
         return textWidth + BORDER * 4;
     }
-
-    
 }

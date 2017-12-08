@@ -5,6 +5,7 @@
  */
 package net.algoid.visualsource.core;
 
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -18,7 +19,7 @@ import javafx.scene.layout.Region;
  *
  * @author cyann
  */
-public abstract class Hook extends Region {
+public abstract class Hook extends Region implements RawSizeQueryable {
 
     // inner
     public static class HookEvent extends Event {
@@ -46,7 +47,7 @@ public abstract class Hook extends Region {
     }
 
     private final HoldType holdType;
-    private final Node tip;
+    private Node tip;
     private final Pane tipContainer;
     private HandleRegion child;
 
@@ -59,10 +60,7 @@ public abstract class Hook extends Region {
         this.getChildren().add(tipContainer);
         tipContainer.toBack();
 
-        tip = createTip();
-        tipContainer.getChildren().add(tip);
-        tipContainer.setPrefSize(tip.getBoundsInLocal().getWidth(), tip.getBoundsInLocal().getHeight());
-        hideTip();
+        Platform.runLater(this::invalidateTip);
 
         this.setOnDragEntered(this::this_onDragEntered);
         this.setOnDragExited(this::this_onDragExited);
@@ -77,6 +75,13 @@ public abstract class Hook extends Region {
 
     //abstract
     protected abstract Node createTip();
+
+    protected void invalidateTip() {
+        tip = createTip();
+        tipContainer.getChildren().add(tip);
+        tipContainer.setPrefSize(tip.getBoundsInLocal().getWidth(), tip.getBoundsInLocal().getHeight());
+        hideTip();
+    }
 
     // accessor
     public HoldType getHoldType() {
@@ -110,6 +115,18 @@ public abstract class Hook extends Region {
         fireEvent(new HookEvent(this, child, HookEvent.RELEASE));
         child = null;
     }
+    
+    // implement
+    @Override
+    public double getRawHeight() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getRawWidth() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 
     // event management
     protected void this_onDragEntered(DragEvent event) {
