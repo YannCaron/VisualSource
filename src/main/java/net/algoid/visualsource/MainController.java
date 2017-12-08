@@ -25,50 +25,60 @@ import net.algoid.visualsource.core.Hook;
  * @author cyann
  */
 public class MainController implements Initializable {
-    
+
+    public static final HoldType HORIZONTAL = new HoldType("HORIZONTAL");
+    public static final HoldType VERTICAL = new HoldType("VERTICAL");
+
     private static class SquareHook extends Hook {
-        
-        public SquareHook() {
-            super(HoldType.ALL);
+
+        public SquareHook(HoldType holdType) {
+            super(holdType);
         }
-        
+
         @Override
         protected Node createTip() {
             return new Rectangle(25, 25, Color.WHITE);
         }
     }
-    
+
     private static class HandleRectangle extends HandleRegion {
-        
+
         public HandleRectangle() {
-            super(HoldType.ALL);
+            super(VERTICAL);
         }
-        
+
         @Override
         public HandleRegion newInstance() {
             HandleRectangle newInstance = new HandleRectangle();
             DragManager.apply(newInstance, TransferMode.MOVE);
-            Hook hook = new SquareHook();
-            newInstance.addLinkedHook(hook);
-            newInstance.registerHookForLayout(hook);
-            hook.relocate(150, 70);
+
+            Hook verticalHook = new SquareHook(VERTICAL);
+            newInstance.addLinkedHook(verticalHook);
+            newInstance.registerHookForLayout(verticalHook);
+            verticalHook.relocate(0, 70);
+
+            Hook horizontalHook = new SquareHook(HORIZONTAL);
+            newInstance.addLinkedHook(horizontalHook);
+            newInstance.registerHookForLayout(horizontalHook);
+            horizontalHook.relocate(150, 0);
+
             return newInstance;
         }
-        
+
         @Override
         public Node createGraphic() {
             return new Rectangle(150, 70, Color.color(Math.random(), Math.random(), Math.random()));
         }
-        
+
         @Override
         public void applyLayout() {
             System.out.println("Layout changed " + this);
         }
     }
-    
+
     @FXML
     VBox container;
-    
+
     @FXML
     VisualSourcePane visualSourcePane;
 
@@ -149,7 +159,7 @@ public class MainController implements Initializable {
         HandleRegion myRegion1 = new HandleRectangle();
         DragManager.apply(myRegion1, TransferMode.COPY);
         container.getChildren().add(myRegion1);
-        
+
         /*
         LinkableRegion actionNode1 = new ActionNode(visualSourcePane, "jump");
         actionNode1.relocate(10, 10);
@@ -187,9 +197,9 @@ public class MainController implements Initializable {
         visualSourcePane.getChildren().addAll(actionNode1, actionNode2, actionNode3, actionNode4, actionNode5);
         visualSourcePane.getChildren().addAll(controlNode1, controlNode2, controlNode3, controlNode4, controlNode5);
         visualSourcePane.getChildren().addAll(operatorNode1, operatorNode2, operatorNode3, operatorNode4, operatorNode5);
-        */
+         */
     }
-    
+
     public void setData() {
     }
 }

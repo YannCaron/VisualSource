@@ -122,15 +122,23 @@ public abstract class Hook extends Region {
 
     protected void tip_onDragEntered(DragEvent event) {
         if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
-            showTip();
-            event.consume();
+
+            HandleRegion region = (HandleRegion) event.getGestureSource();
+            if (holdType.accept(region.getHoldType()) || region.getHoldType().accept(holdType)) {
+                showTip();
+                event.consume();
+
+            }
         }
     }
 
     protected void tip_onDragExited(DragEvent event) {
         if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
-            hideTip();
-            event.consume();
+            HandleRegion region = (HandleRegion) event.getGestureSource();
+            if (holdType.accept(region.getHoldType()) || region.getHoldType().accept(holdType)) {
+                hideTip();
+                event.consume();
+            }
         }
     }
 
@@ -144,22 +152,24 @@ public abstract class Hook extends Region {
 
     protected void tip_onDragDropped(DragEvent event) {
         if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
-            // DragContext context = (DragContext) event.getDragboard().getContent(DragContext.HANDLE_FORMAT);
             HandleRegion region = (HandleRegion) event.getGestureSource();
 
-            HandleRegion previous = child;
+            if (holdType.accept(region.getHoldType()) || region.getHoldType().accept(holdType)) {
 
-            if (event.getAcceptedTransferMode() == TransferMode.COPY) {
-                region = region.newInstance();
+                HandleRegion previous = child;
+
+                if (event.getAcceptedTransferMode() == TransferMode.COPY) {
+                    region = region.newInstance();
+                }
+
+                setChild(region);
+
+                if (previous != null) {
+                    region.getHookTail(holdType).setChild(previous);
+                }
+
+                event.consume();
             }
-
-            setChild(region);
-
-            if (previous != null) {
-                region.getHookTail(holdType).setChild(previous);
-            }
-
-            event.consume();
         }
     }
 

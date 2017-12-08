@@ -14,7 +14,7 @@ import java.util.function.BiPredicate;
  * @author cyann
  */
 public class HoldType {
-
+    
     // class attribute
     public static final HoldType ALL = new HoldType("ALL", (me, other) -> true);
 
