@@ -49,7 +49,8 @@ public class MainController implements Initializable {
             HandleRectangle newInstance = new HandleRectangle();
             DragManager.apply(newInstance, TransferMode.MOVE);
             Hook hook = new SquareHook();
-            newInstance.addHook(hook);
+            newInstance.addLinkedHook(hook);
+            newInstance.registerHookForLayout(hook);
             hook.relocate(150, 70);
             return newInstance;
         }
@@ -61,6 +62,7 @@ public class MainController implements Initializable {
         
         @Override
         public void applyLayout() {
+            System.out.println("Layout changed " + this);
         }
     }
     

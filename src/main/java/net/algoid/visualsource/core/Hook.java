@@ -5,7 +5,9 @@
  */
 package net.algoid.visualsource.core;
 
-import javafx.scene.Group;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
@@ -18,25 +20,53 @@ import javafx.scene.layout.Region;
  */
 public abstract class Hook extends Region {
 
-    private final HoldType type;
+    // inner
+    public static class HookEvent extends Event {
+
+        public static final EventType<HookEvent> HANG = new EventType<>("LINKABLE_HANG");
+        public static final EventType<HookEvent> RELEASE = new EventType<>("LINKABLE_RELEASE");
+
+        private final Hook hook;
+        private final HandleRegion region;
+
+        public HookEvent(Hook hook, HandleRegion region, EventType<? extends HookEvent> eventType) {
+            super(hook, null, eventType);
+            this.hook = hook;
+            this.region = region;
+        }
+
+        public Hook getHook() {
+            return hook;
+        }
+
+        public HandleRegion getRegion() {
+            return region;
+        }
+
+    }
+
+    private final HoldType holdType;
     private final Node tip;
     private final Pane tipContainer;
-    private Node child;
+    private HandleRegion child;
 
-    public Hook(HoldType type) {
-        this.type = type;
+    // constructor    
+    public Hook(HoldType holdType) {
+
+        this.holdType = holdType;
 
         this.tipContainer = new Pane();
         this.getChildren().add(tipContainer);
-
-        tipContainer.toFront();
+        tipContainer.toBack();
 
         tip = createTip();
         tipContainer.getChildren().add(tip);
         tipContainer.setPrefSize(tip.getBoundsInLocal().getWidth(), tip.getBoundsInLocal().getHeight());
         hideTip();
 
-        tipContainer.setPickOnBounds(false);
+        this.setOnDragEntered(this::this_onDragEntered);
+        this.setOnDragExited(this::this_onDragExited);
+
         tipContainer.setOnDragOver(this::tip_onDragOver);
         tipContainer.setOnDragDropped(this::tip_onDragDropped);
 
@@ -45,8 +75,19 @@ public abstract class Hook extends Region {
 
     }
 
+    //abstract
     protected abstract Node createTip();
 
+    // accessor
+    public HoldType getHoldType() {
+        return holdType;
+    }
+
+    public HandleRegion getChild() {
+        return child;
+    }
+
+    // methods
     public void showTip() {
         tip.setVisible(true);
     }
@@ -55,19 +96,30 @@ public abstract class Hook extends Region {
         tip.setVisible(false);
     }
 
-    public void setChild(Node child) {
-        removeChild();
+    public void setChild(HandleRegion child) {
+        this.getChildren().remove(this.child);
         this.getChildren().add(child);
         child.relocate(0, 0);
-        tipContainer.toFront();
         this.child = child;
+
+        fireEvent(new Hook.HookEvent(this, child, Hook.HookEvent.HANG));
     }
 
     public void removeChild() {
         this.getChildren().remove(child);
+        fireEvent(new HookEvent(this, child, HookEvent.RELEASE));
+        child = null;
     }
 
     // event management
+    protected void this_onDragEntered(DragEvent event) {
+        tipContainer.toFront();
+    }
+
+    protected void this_onDragExited(DragEvent event) {
+        tipContainer.toBack();
+    }
+
     protected void tip_onDragEntered(DragEvent event) {
         if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
             showTip();
@@ -83,6 +135,7 @@ public abstract class Hook extends Region {
     }
 
     protected void tip_onDragOver(DragEvent event) {
+        // TODO match holdType
         if (event.getDragboard().hasContent(DragContext.HANDLE_FORMAT)) {
             event.acceptTransferModes(TransferMode.ANY);
             event.consume();
@@ -94,15 +147,28 @@ public abstract class Hook extends Region {
             // DragContext context = (DragContext) event.getDragboard().getContent(DragContext.HANDLE_FORMAT);
             HandleRegion region = (HandleRegion) event.getGestureSource();
 
+            HandleRegion previous = child;
+
             if (event.getAcceptedTransferMode() == TransferMode.COPY) {
-                HandleRegion newInstance = region.newInstance();
-                setChild(newInstance);
-            } else if (event.getAcceptedTransferMode() == TransferMode.MOVE) {
-                setChild(region);
+                region = region.newInstance();
             }
-            
+
+            setChild(region);
+
+            if (previous != null) {
+                region.getHookTail(holdType).setChild(previous);
+            }
+
             event.consume();
         }
     }
 
+    // event register
+    public final void setOnHangEvent(EventHandler<HookEvent> handler) {
+        addEventHandler(HookEvent.HANG, handler);
+    }
+
+    public final void setOnReleaseEvent(EventHandler<HookEvent> handler) {
+        addEventHandler(HookEvent.RELEASE, handler);
+    }
 }
