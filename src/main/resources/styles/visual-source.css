@@ -15,7 +15,7 @@ and open the template in the editor.
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );
 }
 
-.in-control{
+.ControlNode{
     -fx-fill:#d8a20a;
     -fx-stroke:#bb8a09;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.5) , 10,0,0,0 );

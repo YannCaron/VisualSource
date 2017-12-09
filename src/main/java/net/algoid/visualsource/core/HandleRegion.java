@@ -48,7 +48,7 @@ public abstract class HandleRegion extends Region implements RawSizeQueryable {
         view.getChildren().clear();
         view.getChildren().add(v);
         
-        applyLayout();
+        Platform.runLater(this::applyLayout);
     }
     
     public abstract void applyLayout();

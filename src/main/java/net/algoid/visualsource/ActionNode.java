@@ -29,7 +29,6 @@ public class ActionNode extends AbstractSyntaxNode implements Constants {
 
     private final Text textView;
     private final SVGPath shape;
-    private double textWidth = 0;
 
     public ActionNode(String name) {
         super(name, INSTRUCTION);
@@ -50,24 +49,18 @@ public class ActionNode extends AbstractSyntaxNode implements Constants {
 
     @Override
     public Node createView() {
-        textView.getStyleClass().add(String.format("text"));
-        textView.getStyleClass().add(String.format("%s-text", this.getClass().getSimpleName()));
         textView.setX(BORDER);
         textView.setTextOrigin(VPos.CENTER);
         textView.setY(UNIT / 2 - 1);
-        textView.applyCss();
-        textWidth = textView.getLayoutBounds().getWidth();
-
-        shape.setContent(String.format(SVG_FORMAT, getRawWidth(), UNIT));
-        shape.getStyleClass().add(AbstractSyntaxNode.class.getSimpleName());
-        shape.getStyleClass().add(this.getClass().getSimpleName());
-        shape.getStyleClass().add(String.format("%s-%s", this.getClass().getSimpleName(), getName().replace(" ", "-")));
-
+        applyTextStyle(textView);
+        
+        applyShapeStyle(shape);
         return new Group(shape, textView);
     }
 
     @Override
     public void applyLayout() {
+        shape.setContent(String.format(SVG_FORMAT, getRawWidth(), UNIT));
     }
 
     @Override
@@ -77,6 +70,6 @@ public class ActionNode extends AbstractSyntaxNode implements Constants {
 
     @Override
     public double getRawWidth() {
-        return textWidth + BORDER * 4;
+        return textView.getLayoutBounds().getWidth() + BORDER * 2;
     }
 }

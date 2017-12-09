@@ -16,7 +16,7 @@
                     <content>
                         <ScrollPane prefHeight="200.0" prefWidth="200.0">
                             <content>
-                                <VBox fx:id="container"  prefHeight="228.0" prefWidth="200" />
+                                <VBox fx:id="container" prefHeight="228.0" prefWidth="200" spacing="5" />
                             </content>
                         </ScrollPane>
                     </content>

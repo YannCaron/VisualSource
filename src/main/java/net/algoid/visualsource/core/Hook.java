@@ -110,23 +110,30 @@ public abstract class Hook extends Region implements RawSizeQueryable {
         fireEvent(new Hook.HookEvent(this, child, Hook.HookEvent.HANG));
     }
 
+    public boolean hasChild() {
+        return this.child != null;
+    }
+
     public void removeChild() {
         this.getChildren().remove(child);
         fireEvent(new HookEvent(this, child, HookEvent.RELEASE));
         child = null;
     }
-    
+
     // implement
     @Override
     public double getRawHeight() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double height = 0;
+        if (hasChild()) {
+            height += child.getRawHeight();
+        }
+        return height;
     }
 
     @Override
     public double getRawWidth() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 
     // event management
     protected void this_onDragEntered(DragEvent event) {

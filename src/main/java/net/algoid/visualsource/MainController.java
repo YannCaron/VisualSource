@@ -36,6 +36,9 @@ public class MainController implements Initializable {
         container.getChildren().add(new ActionNode("Turn left").applyDragManager(TransferMode.COPY));
         container.getChildren().add(new ActionNode("Turn right").applyDragManager(TransferMode.COPY));
 
+        container.getChildren().add(new ControlNode("Loop").applyDragManager(TransferMode.COPY));
+        container.getChildren().add(new ControlNode("While").applyDragManager(TransferMode.COPY));
+        container.getChildren().add(new ControlNode("If").applyDragManager(TransferMode.COPY));
 
     }
 
