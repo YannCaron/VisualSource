@@ -30,42 +30,51 @@ public abstract class HandleRegion extends Region implements RawSizeQueryable {
     public HandleRegion(HoldType holdType) {
         linkedHooks = new HashMap<>();
         this.holdType = holdType;
-        
+
         view = new Pane();
         getChildren().add(view);
-        
+
         Platform.runLater(this::invalidateView);
     }
 
+    public HandleRegion(HandleRegion cloned) {
+        this(cloned.holdType);
+        createHooks();
+    }
+    
+    
+
     // abstract
     public abstract HandleRegion newInstance();
-    
+
     public abstract Node createView();
-    
+
+    public abstract void createHooks();
+
     protected void invalidateView() {
         Node v = createView();
         initialBoundsInLocal = v.getBoundsInLocal();
         view.getChildren().clear();
         view.getChildren().add(v);
-        
+
         Platform.runLater(this::applyLayout);
     }
-    
+
     public abstract void applyLayout();
 
     // accessor
     public HoldType getHoldType() {
         return holdType;
     }
-    
+
     public Bounds getInitialBoundsInLocal() {
         return initialBoundsInLocal;
     }
-    
+
     private Hook findHook(HoldType holdType) {
         return linkedHooks.get(holdType);
     }
-    
+
     public Hook getHookTail(HoldType holdType) {
         Hook hook = findHook(holdType);
         if (hook != null) {
@@ -82,16 +91,16 @@ public abstract class HandleRegion extends Region implements RawSizeQueryable {
         DragManager.apply(this, transferMode);
         return this;
     }
-    
+
     public void addHook(Hook hook) {
         getChildren().add(hook);
     }
-    
+
     public void addLinkedHook(Hook hook) {
         addHook(hook);
         linkedHooks.put(hook.getHoldType(), hook);
     }
-    
+
     public void registerHookForLayout(Hook hook) {
         hook.setOnHangEvent(this::any_onAnyHookEvent);
         hook.setOnReleaseEvent(this::any_onAnyHookEvent);
@@ -101,5 +110,5 @@ public abstract class HandleRegion extends Region implements RawSizeQueryable {
     private void any_onAnyHookEvent(Hook.HookEvent event) {
         Platform.runLater(this::applyLayout);
     }
-    
+
 }

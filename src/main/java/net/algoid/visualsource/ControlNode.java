@@ -12,9 +12,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import net.algoid.visualsource.core.HandleRegion;
-import net.algoid.visualsource.core.Hook;
-import static net.algoid.visualsource.move.Constants.BORDER;
-import static net.algoid.visualsource.move.Constants.UNIT;
 
 /**
  *
@@ -38,29 +35,26 @@ public class ControlNode extends AbstractSyntaxNode implements Constants {
 
     private final Text textView;
     private final SVGPath shape;
-    Hook controlHook;
+    private InstructionHook controlHook;
+    private InstructionHook instructionHook;
 
     public ControlNode(String name) {
         super(name, INSTRUCTION);
         this.textView = new Text(name);
         shape = new SVGPath();
+        this.applyDragManager(TransferMode.COPY);
+    }
+
+    public ControlNode(ControlNode cloned) {
+        super(cloned);
+        this.textView = new Text(cloned.getName());
+        shape = new SVGPath();
+        this.applyDragManager(TransferMode.MOVE);
     }
 
     @Override
     public HandleRegion newInstance() {
-        ControlNode newInstance = new ControlNode(getName());
-        newInstance.applyDragManager(TransferMode.MOVE);
-
-        newInstance.controlHook = new InstructionHook(getRawWidth() - BORDER);
-        newInstance.addHook(newInstance.controlHook);
-        newInstance.registerHookForLayout(newInstance.controlHook);
-        newInstance.controlHook.relocate(BORDER, UNIT);
-
-        Hook instructionHook = new InstructionHook(75);
-        newInstance.addLinkedHook(instructionHook);
-        instructionHook.relocate(0, getRawHeight());
-
-        return newInstance;
+        return new ControlNode(this);
     }
 
     @Override
@@ -75,15 +69,34 @@ public class ControlNode extends AbstractSyntaxNode implements Constants {
     }
 
     @Override
+    public void createHooks() {
+        controlHook = new InstructionHook();
+        addHook(controlHook);
+        registerHookForLayout(controlHook);
+
+        instructionHook = new InstructionHook();
+        addLinkedHook(instructionHook);
+    }
+
+    @Override
     public void applyLayout() {
         double width = getRawWidth();
         double height = getRawHeight();
         shape.setContent(String.format(SVG_FORMAT, width, UNIT, height, height - BORDER));
+
+        if (controlHook != null) {
+            controlHook.relocate(BORDER, UNIT);
+            controlHook.setTipWidth(width - BORDER);
+        }
+
+        if (instructionHook != null) {
+            instructionHook.setLayoutY(height);
+            instructionHook.setTipWidth(width);
+        }
     }
 
     @Override
     public double getRawHeight() {
-        System.out.println(controlHook);
         double height = UNIT + BORDER;
         if (controlHook != null) {
             height += controlHook.getRawHeight();

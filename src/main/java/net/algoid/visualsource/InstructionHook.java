@@ -20,17 +20,27 @@ public class InstructionHook extends Hook implements Constants {
             + "a 7.5,7.5 0 0 0 7,5 7.5,7.5 0 0 0 7,-5 "
             + "l %1$f,0";
 
-    private final double width;
+    private final SVGPath shape;
+    private double width;
 
-    public InstructionHook(double width) {
+    public InstructionHook() {
         super(INSTRUCTION);
+        shape = new SVGPath();
+        width = UNIT * 4;
+        setContent();
+    }
+
+    private void setContent() {
+        shape.setContent(String.format(SVG_FORMAT, width - 30));
+    }
+
+    public void setTipWidth(double width) {
         this.width = width;
+        setContent();
     }
 
     @Override
     protected Node createTip() {
-        SVGPath shape = new SVGPath();
-        shape.setContent(String.format(SVG_FORMAT, width - 30));
         shape.getStyleClass().add(Hook.class.getSimpleName());
         shape.getStyleClass().add(this.getClass().getSimpleName());
 

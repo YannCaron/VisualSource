@@ -22,6 +22,11 @@ public abstract class AbstractSyntaxNode extends HandleRegion {
         this.name = name;
     }
 
+    public AbstractSyntaxNode(AbstractSyntaxNode cloned) {
+        super(cloned);
+        this.name = cloned.name;
+    }
+
     public void applyTextStyle(Node node) {
         node.getStyleClass().add(String.format("text"));
         node.getStyleClass().add(String.format("%s-text", this.getClass().getSimpleName()));

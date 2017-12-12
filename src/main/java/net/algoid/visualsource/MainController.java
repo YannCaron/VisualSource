@@ -31,14 +31,14 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        container.getChildren().add(new ActionNode("Jump").applyDragManager(TransferMode.COPY));
-        container.getChildren().add(new ActionNode("Go foreward").applyDragManager(TransferMode.COPY));
-        container.getChildren().add(new ActionNode("Turn left").applyDragManager(TransferMode.COPY));
-        container.getChildren().add(new ActionNode("Turn right").applyDragManager(TransferMode.COPY));
+        container.getChildren().add(new ActionNode("Jump"));
+        container.getChildren().add(new ActionNode("Go foreward"));
+        container.getChildren().add(new ActionNode("Turn left"));
+        container.getChildren().add(new ActionNode("Turn right"));
 
-        container.getChildren().add(new ControlNode("Loop").applyDragManager(TransferMode.COPY));
-        container.getChildren().add(new ControlNode("While").applyDragManager(TransferMode.COPY));
-        container.getChildren().add(new ControlNode("If").applyDragManager(TransferMode.COPY));
+        container.getChildren().add(new ControlNode("Loop"));
+        container.getChildren().add(new ControlNode("While"));
+        container.getChildren().add(new ControlNode("If"));
 
     }
 

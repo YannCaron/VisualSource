@@ -12,7 +12,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import net.algoid.visualsource.core.HandleRegion;
-import net.algoid.visualsource.core.Hook;
 
 /**
  *
@@ -29,6 +28,7 @@ public class ActionNode extends AbstractSyntaxNode implements Constants {
 
     private final Text textView;
     private final SVGPath shape;
+    private InstructionHook instructionHook;
 
     public ActionNode(String name) {
         super(name, INSTRUCTION);
@@ -36,15 +36,16 @@ public class ActionNode extends AbstractSyntaxNode implements Constants {
         shape = new SVGPath();
     }
 
+    public ActionNode(ActionNode cloned) {
+        super(cloned);
+        this.textView = new Text(cloned.getName());
+        this.shape = new SVGPath();
+        this.applyDragManager(TransferMode.MOVE);
+    }
+
     @Override
     public HandleRegion newInstance() {
-        HandleRegion newInstance = new ActionNode(getName()).applyDragManager(TransferMode.MOVE);
-
-        Hook instructionHook = new InstructionHook(getRawWidth());
-        newInstance.addLinkedHook(instructionHook);
-        instructionHook.relocate(0, getRawHeight());
-
-        return newInstance;
+        return new ActionNode(this);
     }
 
     @Override
@@ -53,14 +54,27 @@ public class ActionNode extends AbstractSyntaxNode implements Constants {
         textView.setTextOrigin(VPos.CENTER);
         textView.setY(UNIT / 2 - 1);
         applyTextStyle(textView);
-        
+
         applyShapeStyle(shape);
         return new Group(shape, textView);
     }
 
     @Override
+    public void createHooks() {
+        instructionHook = new InstructionHook();
+        addLinkedHook(instructionHook);
+    }
+
+    @Override
     public void applyLayout() {
-        shape.setContent(String.format(SVG_FORMAT, getRawWidth(), UNIT));
+        double width = getRawWidth();
+        
+        shape.setContent(String.format(SVG_FORMAT, width, UNIT));
+        if (instructionHook != null) {
+            instructionHook.setTipWidth(width);
+            instructionHook.relocate(0, width);
+        }
+
     }
 
     @Override
@@ -72,4 +86,5 @@ public class ActionNode extends AbstractSyntaxNode implements Constants {
     public double getRawWidth() {
         return textView.getLayoutBounds().getWidth() + BORDER * 2;
     }
+
 }
